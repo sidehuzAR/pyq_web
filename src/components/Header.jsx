@@ -1,9 +1,7 @@
 import React from 'react';
-import { Search, Upload, Sun, Moon } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 
 export default function Header({
-  searchQuery,
-  setSearchQuery,
   theme,
   setTheme,
   onOpenUpload,
@@ -18,21 +16,6 @@ export default function Header({
           <span className="brand-name-white">PY</span>
           <span className="brand-name-red">ARCHIVE</span>
           <span className="slash-tag">/&gt;</span>
-        </div>
-
-        {/* Center Search Bar using Flexbox */}
-        <div className="header-search-box">
-          <Search size={16} className="header-search-icon" />
-          <input
-            type="text"
-            className="header-search-input"
-            placeholder="Search course code or subject name..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          {searchQuery && (
-            <button className="clear-btn" onClick={() => setSearchQuery('')}>×</button>
-          )}
         </div>
 
         {/* Right Actions */}
@@ -69,7 +52,6 @@ export default function Header({
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 1.5rem;
         }
         .brand-logo {
           display: flex;
@@ -99,51 +81,6 @@ export default function Header({
           color: var(--text-muted);
           margin-left: 0.2rem;
         }
-        .header-search-box {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-          background: rgba(0, 0, 0, 0.7);
-          border: 1px solid var(--border-dark);
-          border-radius: 999px;
-          padding: 0.45rem 1rem;
-          flex: 1;
-          max-width: 440px;
-          transition: all 0.2s ease;
-        }
-        .header-search-box:focus-within {
-          border-color: var(--crimson-main);
-          box-shadow: 0 0 0 3px rgba(211, 7, 14, 0.25);
-        }
-        .header-search-icon {
-          color: var(--text-muted);
-          flex-shrink: 0;
-          display: block;
-        }
-        .header-search-input {
-          flex: 1;
-          min-width: 0;
-          background: transparent;
-          border: none;
-          outline: none;
-          color: var(--text-white);
-          font-family: var(--font-sans);
-          font-size: 0.88rem;
-          padding: 0;
-        }
-        .clear-btn {
-          flex-shrink: 0;
-          background: none;
-          border: none;
-          color: var(--text-muted);
-          font-size: 1rem;
-          cursor: pointer;
-          line-height: 1;
-          padding: 0 0.2rem;
-        }
-        .clear-btn:hover {
-          color: var(--crimson-bright);
-        }
         .header-right {
           display: flex;
           align-items: center;
@@ -165,11 +102,6 @@ export default function Header({
         .theme-btn:hover {
           border-color: var(--crimson-main);
           color: var(--crimson-bright);
-        }
-        @media (max-width: 768px) {
-          .header-search-box {
-            display: none;
-          }
         }
       `}</style>
     </header>

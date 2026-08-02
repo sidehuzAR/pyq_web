@@ -89,8 +89,6 @@ export default function App() {
 
       {/* Header Bar */}
       <Header
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
         theme={theme}
         setTheme={setTheme}
         onOpenUpload={() => setShowUploadModal(true)}
@@ -112,10 +110,11 @@ export default function App() {
         />
       ) : (
         <>
-          {/* Main Public Website */}
+          {/* Main Public Website with Single Search Bar & Autocomplete Dropdown */}
           <HomeHero
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            courses={courses}
           />
 
           <Catalogue
