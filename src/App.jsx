@@ -87,8 +87,11 @@ export default function App() {
         <div className="circuit-node"></div>
       </div>
 
-      {/* Header Bar */}
+      {/* Header Bar with Single Top Search Bar & Autocomplete Dropdown */}
       <Header
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        courses={courses}
         theme={theme}
         setTheme={setTheme}
         onOpenUpload={() => setShowUploadModal(true)}
@@ -110,13 +113,10 @@ export default function App() {
         />
       ) : (
         <>
-          {/* Main Public Website with Single Search Bar & Autocomplete Dropdown */}
-          <HomeHero
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            courses={courses}
-          />
+          {/* Hero Banner */}
+          <HomeHero />
 
+          {/* Exam Catalogue Matrix */}
           <Catalogue
             papers={approvedPapers}
             courses={courses}
