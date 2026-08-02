@@ -5,7 +5,7 @@ export default function HomeHero() {
     <section className="hackclub-hero-section">
       <div className="hero-centered-content">
         <div className="section-label" style={{ justifyContent: 'center' }}>
-          <span>◇</span> ACADEMIC EXAM ARCHIVE
+          <span>■</span> RETRO ACADEMIC ARCHIVE
         </div>
 
         <h1 className="split-title">
@@ -14,7 +14,7 @@ export default function HomeHero() {
         </h1>
 
         <p className="hero-desc">
-          High-speed question paper archive for VIT students — search CAT-1, CAT-2, and FAT exam papers categorized by timetable slots, semesters, and course codes.
+          8-bit pixelated exam archive for VIT students — search CAT-1, CAT-2, and FAT question papers categorized by slots, semesters, and course codes.
         </p>
       </div>
 
@@ -24,7 +24,7 @@ export default function HomeHero() {
           text-align: center;
         }
         .hero-centered-content {
-          max-width: 820px;
+          max-width: 840px;
           margin: 0 auto;
           display: flex;
           flex-direction: column;
@@ -32,10 +32,11 @@ export default function HomeHero() {
           gap: 1.25rem;
         }
         .hero-desc {
-          font-size: 1.1rem;
+          font-size: 1.15rem;
           color: var(--text-muted);
-          max-width: 680px;
+          max-width: 700px;
           line-height: 1.6;
+          font-family: var(--font-pixel);
         }
         @media (max-width: 768px) {
           .split-title {

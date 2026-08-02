@@ -1,55 +1,55 @@
 /* ==========================================================================
-   HackClub VIT Portal Official Design System — papersvitc
-   Reference: https://hackclub-vit-portal.onrender.com/
+   PYArchive — Retro Pixelated Cyber-Crimson Design System
    ========================================================================== */
 
 :root {
-  /* Core Theme Tokens */
+  /* Core Theme Tokens (Color Theme Kept 100% Identical) */
   --bg-black: #000000;
-  --bg-surface: #0e0202;
-  --bg-surface-elevated: #160404;
-  --bg-card: rgba(14, 2, 2, 0.85);
+  --bg-surface: #0a0101;
+  --bg-surface-elevated: #120303;
+  --bg-card: rgba(10, 1, 1, 0.94);
   
   /* Cyber Crimson Colors */
   --crimson-main: #d3070e;
   --crimson-bright: #ff1a22;
-  --crimson-dark: #7a0408;
-  --crimson-glow: rgba(211, 7, 14, 0.35);
+  --crimson-dark: #6e0407;
+  --crimson-glow: rgba(211, 7, 14, 0.4);
 
   /* Warm Accent & Text */
   --amber-accent: #e08b26;
   --text-white: #f5f5f7;
   --text-cream: #eae4dc;
-  --text-muted: #9e8d89;
-  --text-subtle: #6b5a57;
+  --text-muted: #a3918d;
+  --text-subtle: #665451;
   
-  /* Borders & Grid */
-  --border-dark: #240808;
-  --border-crimson: rgba(211, 7, 14, 0.3);
-  --border-light: rgba(255, 255, 255, 0.08);
+  /* Borders & Pixel Shapes */
+  --border-dark: #290808;
+  --border-crimson: #d3070e;
+  --pixel-shadow: 4px 4px 0px #d3070e;
+  --pixel-shadow-amber: 4px 4px 0px #e08b26;
 
   /* Typography */
+  --font-pixel: 'Pixelify Sans', 'VT323', monospace;
+  --font-arcade: 'Press Start 2P', monospace;
   --font-sans: 'Inter', -apple-system, sans-serif;
-  --font-display: 'Outfit', 'Space Grotesk', sans-serif;
-  --font-mono: ui-monospace, 'Consolas', 'Courier New', monospace;
+  --font-mono: ui-monospace, 'Consolas', monospace;
 
   /* Glass & Shadows */
-  --glass-blur: blur(14px);
-  --shadow-cyber: 0 16px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(211, 7, 14, 0.15);
+  --shadow-cyber: 0 10px 40px rgba(0, 0, 0, 0.95), 4px 4px 0px rgba(211, 7, 14, 0.35);
 }
 
 /* Light Theme Variant */
 [data-theme='light'] {
-  --bg-black: #fcf8f7;
+  --bg-black: #f7f0ef;
   --bg-surface: #ffffff;
-  --bg-surface-elevated: #f7eee9;
-  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-surface-elevated: #f2e5e1;
+  --bg-card: rgba(255, 255, 255, 0.95);
   --crimson-main: #b8050b;
-  --text-white: #110303;
-  --text-cream: #240a09;
-  --text-muted: #5c4642;
-  --border-dark: #e8d5d1;
-  --shadow-cyber: 0 10px 30px rgba(184, 5, 11, 0.08);
+  --text-white: #140202;
+  --text-cream: #290a09;
+  --text-muted: #5e4844;
+  --border-dark: #e0c9c4;
+  --pixel-shadow: 3px 3px 0px #b8050b;
 }
 
 /* Reset & Setup */
@@ -65,7 +65,7 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-pixel);
   background-color: var(--bg-black);
   color: var(--text-cream);
   line-height: 1.5;
@@ -74,30 +74,75 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Space Dust & Ambient Background Grid */
+/* Stunning Retro 8-Bit Cyber-Crimson Canvas & Animated Scanline Grid */
 .cyber-canvas-bg {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(211, 7, 14, 0.18), transparent 45%),
-    radial-gradient(circle at 90% 90%, rgba(224, 139, 38, 0.12), transparent 40%),
-    radial-gradient(1px 1px at 20px 30px, #ffffff15, transparent),
-    radial-gradient(1px 1px at 40px 70px, #ffffff10, transparent),
-    radial-gradient(1px 1px at 90px 40px, #ffffff18, transparent),
-    var(--bg-black);
-  background-size: 100% 100%, 100% 100%, 120px 120px, 160px 160px, 200px 200px;
+  background-color: #000000;
+  background-image: 
+    /* Crimson Ambient Glowing Radial Nebulae */
+    radial-gradient(circle at 50% 0%, rgba(211, 7, 14, 0.28) 0%, transparent 60%),
+    radial-gradient(circle at 10% 80%, rgba(211, 7, 14, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 90% 40%, rgba(224, 139, 38, 0.18) 0%, transparent 50%),
+    /* Retro 8-Bit Pixel Grid Lines */
+    linear-gradient(to right, rgba(211, 7, 14, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(211, 7, 14, 0.08) 1px, transparent 1px),
+    /* Retro CRT Horiz Scanlines */
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%);
+  background-size: 
+    100% 100%, 
+    100% 100%, 
+    100% 100%, 
+    32px 32px, 
+    32px 32px, 
+    100% 4px;
+  animation: bgPulse 8s infinite alternate ease-in-out;
 }
 
-/* Cyber Right-Side Circuit Bar */
+@keyframes bgPulse {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 1;
+    filter: contrast(105%);
+  }
+}
+
+/* Animated Retro Pixel Stars Canvas Overlay */
+.cyber-canvas-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(3px 3px at 40px 60px, #ffffff30, transparent),
+    radial-gradient(2px 2px at 150px 180px, #ff1a2240, transparent),
+    radial-gradient(3px 3px at 280px 90px, #e08b2640, transparent),
+    radial-gradient(2px 2px at 420px 300px, #ffffff25, transparent),
+    radial-gradient(3px 3px at 600px 120px, #ff1a2235, transparent),
+    radial-gradient(2px 2px at 750px 250px, #ffffff30, transparent),
+    radial-gradient(3px 3px at 900px 70px, #e08b2635, transparent),
+    radial-gradient(2px 2px at 1100px 350px, #ffffff20, transparent);
+  background-size: 350px 350px;
+  animation: starFlicker 4s infinite linear;
+}
+
+@keyframes starFlicker {
+  0% { opacity: 0.7; transform: translateY(0); }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; transform: translateY(-4px); }
+}
+
+/* Cyber Pixel Rail */
 .cyber-circuit-rail {
   position: fixed;
   right: 1.25rem;
   top: 0;
   bottom: 0;
-  width: 2px;
-  background: linear-gradient(180deg, transparent, rgba(211, 7, 14, 0.4) 20%, rgba(211, 7, 14, 0.4) 80%, transparent);
+  width: 3px;
+  background: linear-gradient(180deg, transparent, var(--crimson-main) 20%, var(--crimson-main) 80%, transparent);
   pointer-events: none;
   z-index: 90;
   display: flex;
@@ -110,10 +155,9 @@ body {
 .circuit-node {
   width: 10px;
   height: 10px;
-  transform: rotate(45deg);
-  border: 2px solid var(--crimson-main);
   background: var(--bg-black);
-  box-shadow: 0 0 10px var(--crimson-main);
+  border: 2px solid var(--crimson-main);
+  box-shadow: 2px 2px 0px var(--crimson-main);
 }
 
 .circuit-node.active {
@@ -123,8 +167,8 @@ body {
 .rail-label {
   writing-mode: vertical-rl;
   text-transform: uppercase;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-family: var(--font-arcade);
+  font-size: 0.55rem;
   letter-spacing: 0.25em;
   color: var(--crimson-main);
 }
@@ -137,47 +181,34 @@ body {
   min-height: 100vh;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-black);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--crimson-dark);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--crimson-main);
-}
-
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
+  font-family: var(--font-pixel);
   color: var(--text-white);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .section-label {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-family: var(--font-arcade);
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--crimson-main);
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
-/* HackClub Split Title */
+/* Pixel Split Title */
 .split-title {
-  font-size: 4rem;
-  font-weight: 900;
+  font-family: var(--font-pixel);
+  font-size: 4.2rem;
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: -0.04em;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-shadow: 4px 4px 0px rgba(211, 7, 14, 0.4);
 }
 
 .split-title .white-part {
@@ -186,121 +217,127 @@ h1, h2, h3, h4, h5, h6 {
 
 .split-title .red-part {
   color: var(--crimson-main);
-  text-shadow: 0 0 35px rgba(211, 7, 14, 0.4);
 }
 
-/* Buttons */
+/* Buttons Pixelated Arcade Style */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-family: var(--font-pixel);
+  font-size: 1rem;
   font-weight: 700;
-  padding: 0.6rem 1.25rem;
-  border-radius: 6px;
-  border: 1px solid transparent;
+  padding: 0.55rem 1.25rem;
+  border-radius: 0px;
+  border: 2px solid transparent;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.1s ease;
   text-decoration: none;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  position: relative;
 }
 
 .btn-cyber-red {
   background: var(--crimson-main);
   color: #ffffff;
   border-color: var(--crimson-bright);
-  box-shadow: 0 4px 20px rgba(211, 7, 14, 0.4);
+  box-shadow: var(--pixel-shadow);
 }
 
 .btn-cyber-red:hover {
   background: var(--crimson-bright);
-  box-shadow: 0 6px 30px rgba(255, 26, 34, 0.6);
-  transform: translateY(-2px);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px rgba(255, 26, 34, 0.6);
+}
+
+.btn-cyber-red:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000;
 }
 
 .btn-cyber-outline {
-  background: rgba(14, 2, 2, 0.6);
+  background: rgba(10, 1, 1, 0.85);
   color: var(--text-cream);
-  border-color: var(--border-crimson);
+  border-color: var(--border-dark);
+  box-shadow: 3px 3px 0px #1a0404;
 }
 
 .btn-cyber-outline:hover {
   border-color: var(--crimson-main);
   color: var(--text-white);
-  background: rgba(211, 7, 14, 0.15);
+  background: rgba(211, 7, 14, 0.2);
+  box-shadow: 4px 4px 0px var(--crimson-main);
 }
 
 .btn-cyber-amber {
   background: var(--amber-accent);
   color: #000000;
-  border-color: var(--amber-accent);
+  border-color: #f59e0b;
+  box-shadow: var(--pixel-shadow-amber);
 }
 
 .btn-cyber-amber:hover {
   background: #f59e0b;
-  box-shadow: 0 4px 20px rgba(224, 139, 38, 0.4);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px rgba(224, 139, 38, 0.6);
 }
 
-/* Cyber Cards */
+/* Pixel Cyber Cards */
 .cyber-card {
   background: var(--bg-card);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border-dark);
-  border-radius: 12px;
+  border: 2px solid var(--border-dark);
+  border-radius: 0px;
   box-shadow: var(--shadow-cyber);
   position: relative;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s ease;
 }
 
 .cyber-card::before {
-  content: '';
+  content: '■';
   position: absolute;
-  top: -1px;
-  left: 20px;
-  width: 40px;
-  height: 2px;
-  background: var(--crimson-main);
-  opacity: 0.6;
+  top: -6px;
+  left: 12px;
+  font-size: 0.6rem;
+  color: var(--crimson-main);
 }
 
 .cyber-card:hover {
-  border-color: var(--border-crimson);
-  transform: translateY(-4px);
+  border-color: var(--crimson-main);
+  box-shadow: 6px 6px 0px var(--crimson-glow);
+}
+
+/* Inputs Pixelated */
+.cyber-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--border-dark);
+  border-radius: 0px;
+  padding: 0.65rem 1rem;
+  color: var(--text-white);
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.cyber-input:focus {
+  border-color: var(--crimson-main);
+  box-shadow: 3px 3px 0px var(--crimson-main);
 }
 
 /* Modals */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.88);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(8px);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-}
-
-/* Inputs */
-.cyber-input {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid var(--border-dark);
-  border-radius: 8px;
-  padding: 0.65rem 1rem;
-  color: var(--text-white);
-  font-family: var(--font-sans);
-  font-size: 0.92rem;
-  outline: none;
-  transition: all 0.2s ease;
-}
-
-.cyber-input:focus {
-  border-color: var(--crimson-main);
-  box-shadow: 0 0 0 3px rgba(211, 7, 14, 0.25);
 }
 
 @media (max-width: 900px) {

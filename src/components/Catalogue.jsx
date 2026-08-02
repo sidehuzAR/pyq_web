@@ -129,10 +129,10 @@ export default function Catalogue({
         {/* Top Section Header */}
         <div className="catalogue-top-header">
           <div className="section-label">
-            <span>◇</span> EXAM CATALOGUE MATRIX
+            <span>■</span> EXAM CATALOGUE MATRIX
           </div>
           <p className="catalogue-sub">
-            Filter past exam papers across VIT timetable slots and course categories. Click any subject to open its dedicated page.
+            Filter past exam papers across VIT timetable slots and course categories. Click any subject card to open its dedicated page.
           </p>
         </div>
 
@@ -144,7 +144,7 @@ export default function Catalogue({
               onClick={() => setShowFilterDrawer(!showFilterDrawer)}
             >
               <Filter size={15} />
-              <span>{showFilterDrawer ? 'Hide Filters' : 'Show Filter Deck'}</span>
+              <span>{showFilterDrawer ? 'HIDE FILTERS' : 'SHOW FILTER DECK'}</span>
             </button>
 
             {/* Answer Key Quick Toggle */}
@@ -155,16 +155,16 @@ export default function Catalogue({
                 onChange={e => setOnlyAnswerKeys(e.target.checked)}
               />
               <span className="cyber-toggle-box"></span>
-              <span>Answer Key Only</span>
+              <span>ANSWER KEY ONLY</span>
             </label>
 
             {/* Batch Download Controls */}
             <div className="deck-actions-right">
               <button className="btn btn-cyber-outline btn-sm" onClick={handleSelectAll}>
-                Select All
+                SELECT ALL
               </button>
               <button className="btn btn-cyber-outline btn-sm" onClick={handleDeselectAll}>
-                Deselect All
+                DESELECT ALL
               </button>
               <button
                 className="btn btn-cyber-amber btn-sm"
@@ -172,7 +172,7 @@ export default function Catalogue({
                 disabled={selectedPaperIds.length === 0 || isZipping}
               >
                 <Download size={14} />
-                <span>{isZipping ? 'Zipping...' : `Download Selected (${selectedPaperIds.length})`}</span>
+                <span>{isZipping ? 'ZIPPING...' : `DOWNLOAD SELECTED (${selectedPaperIds.length})`}</span>
               </button>
             </div>
           </div>
@@ -182,7 +182,7 @@ export default function Catalogue({
             <div className="filter-console-body">
               {/* Exam Category Pills */}
               <div className="filter-row">
-                <span className="filter-row-title">Exam Type:</span>
+                <span className="filter-row-title">EXAM TYPE:</span>
                 <div className="filter-chips">
                   {EXAM_TYPES.map(exam => (
                     <button
@@ -198,7 +198,7 @@ export default function Catalogue({
 
               {/* Slot Tags Matrix */}
               <div className="filter-row">
-                <span className="filter-row-title">Slots:</span>
+                <span className="filter-row-title">SLOTS:</span>
                 <div className="filter-chips">
                   <span className="chip-category">Theory:</span>
                   {AVAILABLE_SLOTS.theory.map(slot => (
@@ -235,7 +235,7 @@ export default function Catalogue({
 
               {/* Years & Semesters */}
               <div className="filter-row">
-                <span className="filter-row-title">Academic Year:</span>
+                <span className="filter-row-title">ACADEMIC YEAR:</span>
                 <div className="filter-chips">
                   {ACADEMIC_YEARS.map(yr => (
                     <button
@@ -250,7 +250,7 @@ export default function Catalogue({
               </div>
 
               <div className="filter-row">
-                <span className="filter-row-title">Semester:</span>
+                <span className="filter-row-title">SEMESTER:</span>
                 <div className="filter-chips">
                   {SEMESTERS.map(sem => (
                     <button
@@ -272,15 +272,15 @@ export default function Catalogue({
           <div className="matrix-results-bar">
             <span>SHOWING {filteredPapers.length} QUESTION PAPERS</span>
             <div className="sort-box">
-              <span>Sort:</span>
+              <span>SORT:</span>
               <select
                 className="cyber-select-mini"
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value)}
               >
-                <option value="year-desc">Year (New to Old)</option>
-                <option value="year-asc">Year (Old to New)</option>
-                <option value="code-asc">Course Code</option>
+                <option value="year-desc">YEAR (NEW TO OLD)</option>
+                <option value="year-asc">YEAR (OLD TO NEW)</option>
+                <option value="code-asc">COURSE CODE</option>
               </select>
             </div>
           </div>
@@ -288,7 +288,7 @@ export default function Catalogue({
           <div className="papers-matrix-grid">
             {filteredPapers.length === 0 ? (
               <div className="empty-matrix cyber-card">
-                <h3>No exam papers match your active filter options</h3>
+                <h3>NO EXAM PAPERS MATCH YOUR ACTIVE FILTERS</h3>
                 <p>Try resetting filters or searching for a different course code.</p>
               </div>
             ) : (
@@ -300,16 +300,13 @@ export default function Catalogue({
                     key={paper.id}
                     className={`paper-matrix-card cyber-card ${isSelected ? 'selected' : ''}`}
                   >
-                    {/* Corner Accent Node */}
-                    <div className="corner-node"></div>
-
                     {/* Image Preview Thumbnail */}
                     <div className="card-thumb-box" onClick={() => onSelectSubject(paper.course_code)}>
                       <img src={paper.file_url} alt={paper.subject_name} loading="lazy" />
                       <div className="thumb-hover-action">
                         <button className="btn btn-cyber-red btn-sm">
                           <FolderOpen size={14} />
-                          <span>Open Subject Page</span>
+                          <span>OPEN SUBJECT PAGE</span>
                         </button>
                       </div>
 
@@ -333,7 +330,7 @@ export default function Catalogue({
                         </span>
                         {paper.has_answer_key && (
                           <span className="key-badge">
-                            <CheckCircle size={11} /> Answer Key
+                            <CheckCircle size={12} /> KEY INCLUDED
                           </span>
                         )}
                       </div>
@@ -405,7 +402,8 @@ export default function Catalogue({
         }
         .catalogue-sub {
           color: var(--text-muted);
-          font-size: 0.9rem;
+          font-size: 0.95rem;
+          font-family: var(--font-pixel);
         }
         .cyber-filter-deck {
           padding: 1.25rem;
@@ -421,9 +419,10 @@ export default function Catalogue({
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          font-size: 0.85rem;
+          font-size: 0.88rem;
           color: var(--text-cream);
           cursor: pointer;
+          font-family: var(--font-pixel);
         }
         .deck-actions-right {
           margin-left: auto;
@@ -433,13 +432,13 @@ export default function Catalogue({
           flex-wrap: wrap;
         }
         .btn-sm {
-          font-size: 0.78rem;
+          font-size: 0.82rem;
           padding: 0.4rem 0.85rem;
         }
         .filter-console-body {
           margin-top: 1.25rem;
           padding-top: 1.25rem;
-          border-top: 1px solid var(--border-dark);
+          border-top: 2px solid var(--border-dark);
           display: flex;
           flex-direction: column;
           gap: 0.85rem;
@@ -451,11 +450,11 @@ export default function Catalogue({
           flex-wrap: wrap;
         }
         .filter-row-title {
-          font-family: var(--font-mono);
-          font-size: 0.78rem;
+          font-family: var(--font-arcade);
+          font-size: 0.65rem;
           font-weight: 700;
           color: var(--crimson-main);
-          min-width: 110px;
+          min-width: 120px;
         }
         .filter-chips {
           display: flex;
@@ -464,44 +463,45 @@ export default function Catalogue({
           gap: 0.4rem;
         }
         .chip-category {
-          font-size: 0.72rem;
+          font-size: 0.78rem;
           color: var(--text-subtle);
           margin-right: 0.2rem;
           font-weight: 600;
+          font-family: var(--font-pixel);
         }
         .chip {
           padding: 0.25rem 0.65rem;
-          border-radius: 4px;
-          background: rgba(0, 0, 0, 0.5);
-          border: 1px solid var(--border-dark);
+          background: rgba(0, 0, 0, 0.6);
+          border: 2px solid var(--border-dark);
           color: var(--text-muted);
-          font-size: 0.78rem;
-          font-family: var(--font-mono);
+          font-size: 0.85rem;
+          font-family: var(--font-pixel);
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all 0.15s ease;
+          box-shadow: 2px 2px 0px #000;
         }
         .chip:hover, .chip.active {
           border-color: var(--crimson-main);
           background: var(--crimson-main);
           color: #ffffff;
+          box-shadow: 3px 3px 0px rgba(211, 7, 14, 0.5);
         }
         .matrix-results-bar {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          font-family: var(--font-mono);
-          font-size: 0.78rem;
+          font-family: var(--font-arcade);
+          font-size: 0.65rem;
           color: var(--text-muted);
           margin-bottom: 1rem;
         }
         .cyber-select-mini {
-          background: rgba(0, 0, 0, 0.5);
-          border: 1px solid var(--border-dark);
+          background: rgba(0, 0, 0, 0.8);
+          border: 2px solid var(--border-dark);
           color: var(--text-cream);
           padding: 0.25rem 0.5rem;
-          border-radius: 4px;
-          font-family: var(--font-mono);
-          font-size: 0.78rem;
+          font-family: var(--font-pixel);
+          font-size: 0.85rem;
           margin-left: 0.4rem;
         }
         .papers-matrix-grid {
@@ -516,24 +516,13 @@ export default function Catalogue({
           color: var(--text-muted);
         }
         .paper-matrix-card {
-          border-radius: 12px;
           overflow: hidden;
           display: flex;
           flex-direction: column;
         }
         .paper-matrix-card.selected {
           border-color: var(--amber-accent);
-          box-shadow: 0 0 25px rgba(224, 139, 38, 0.3);
-        }
-        .corner-node {
-          position: absolute;
-          top: 8px;
-          right: 8px;
-          width: 6px;
-          height: 6px;
-          background: var(--crimson-main);
-          border-radius: 50%;
-          box-shadow: 0 0 8px var(--crimson-main);
+          box-shadow: 4px 4px 0px var(--amber-accent);
         }
         .card-thumb-box {
           position: relative;
@@ -541,6 +530,7 @@ export default function Catalogue({
           background: #060101;
           overflow: hidden;
           cursor: pointer;
+          border-bottom: 2px solid var(--border-dark);
         }
         .card-thumb-box img {
           width: 100%;
@@ -554,7 +544,7 @@ export default function Catalogue({
         .thumb-hover-action {
           position: absolute;
           inset: 0;
-          background: rgba(0, 0, 0, 0.75);
+          background: rgba(0, 0, 0, 0.8);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -568,21 +558,21 @@ export default function Catalogue({
           position: absolute;
           top: 0.6rem;
           left: 0.6rem;
-          background: rgba(0, 0, 0, 0.75);
-          border: none;
+          background: rgba(0, 0, 0, 0.8);
+          border: 1px solid var(--border-dark);
           color: var(--text-muted);
           cursor: pointer;
           padding: 0.2rem;
-          border-radius: 4px;
         }
         .select-check-btn.checked {
           color: var(--amber-accent);
+          border-color: var(--amber-accent);
         }
         .card-body {
           padding: 1rem;
           display: flex;
           flex-direction: column;
-          gap: 0.5rem;
+          gap: 0.55rem;
           flex: 1;
         }
         .card-top-info {
@@ -591,8 +581,8 @@ export default function Catalogue({
           justify-content: space-between;
         }
         .course-code-badge {
-          font-family: var(--font-mono);
-          font-size: 0.78rem;
+          font-family: var(--font-pixel);
+          font-size: 0.95rem;
           font-weight: 700;
           color: var(--amber-accent);
           cursor: pointer;
@@ -604,14 +594,15 @@ export default function Catalogue({
           display: flex;
           align-items: center;
           gap: 0.2rem;
-          font-size: 0.72rem;
+          font-size: 0.78rem;
           color: #4ade80;
-          font-family: var(--font-mono);
+          font-family: var(--font-pixel);
         }
         .subject-title {
-          font-size: 1rem;
+          font-size: 1.1rem;
           font-weight: 700;
           cursor: pointer;
+          font-family: var(--font-pixel);
         }
         .subject-title:hover {
           color: var(--crimson-bright);
@@ -619,37 +610,39 @@ export default function Catalogue({
         .tag-badges-row {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.3rem;
+          gap: 0.35rem;
         }
         .cyber-pill {
           padding: 0.15rem 0.5rem;
-          border-radius: 4px;
-          font-family: var(--font-mono);
-          font-size: 0.72rem;
+          font-family: var(--font-pixel);
+          font-size: 0.78rem;
           font-weight: 700;
+          border: 1px solid transparent;
         }
         .pill-exam {
           background: rgba(211, 7, 14, 0.2);
           color: #ff6b6b;
-          border: 1px solid rgba(211, 7, 14, 0.4);
+          border-color: rgba(211, 7, 14, 0.5);
         }
         .pill-slot {
           background: rgba(224, 139, 38, 0.2);
           color: #ffb86c;
-          border: 1px solid rgba(224, 139, 38, 0.4);
+          border-color: rgba(224, 139, 38, 0.5);
         }
         .pill-year {
           background: rgba(255, 255, 255, 0.08);
           color: var(--text-muted);
+          border-color: var(--border-dark);
         }
         .pill-sem {
           background: rgba(91, 97, 214, 0.2);
           color: #a5b4fc;
+          border-color: rgba(91, 97, 214, 0.5);
         }
         .card-footer-actions {
           margin-top: auto;
-          padding-top: 0.6rem;
-          border-top: 1px solid var(--border-dark);
+          padding-top: 0.65rem;
+          border-top: 2px solid var(--border-dark);
           display: flex;
           align-items: center;
           gap: 0.5rem;
@@ -658,22 +651,23 @@ export default function Catalogue({
           display: flex;
           align-items: center;
           gap: 0.35rem;
-          font-size: 0.78rem;
+          font-size: 0.85rem;
           color: var(--text-muted);
           cursor: pointer;
           margin-right: auto;
+          font-family: var(--font-pixel);
         }
         .btn-icon-mini {
           background: rgba(255, 255, 255, 0.06);
           border: 1px solid var(--border-dark);
           color: var(--text-cream);
           padding: 0.3rem;
-          border-radius: 4px;
           cursor: pointer;
         }
         .btn-icon-mini:hover {
           background: var(--crimson-main);
           color: #fff;
+          border-color: var(--crimson-bright);
         }
       `}</style>
     </div>

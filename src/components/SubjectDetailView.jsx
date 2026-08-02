@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Download, Eye, CheckCircle, FileText, Calendar, Clock } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { ArrowLeft, Download, Eye, CheckCircle, FileText, Calendar, Clock, Filter } from 'lucide-react';
 import JSZip from 'jszip';
 
 export default function SubjectDetailView({
@@ -15,30 +15,86 @@ export default function SubjectDetailView({
     subject_name: courseCode
   };
 
-  // Get all papers for this course code
-  const subjectPapers = papers.filter(p => p.course_code.toLowerCase() === courseCode.toLowerCase());
+  // Get all papers for this specific course code
+  const subjectPapers = useMemo(() => {
+    return papers.filter(p => p.course_code.toLowerCase() === courseCode.toLowerCase());
+  }, [papers, courseCode]);
 
-  // Exam type tab filter: 'ALL' | 'CAT-1' | 'CAT-2' | 'FAT'
-  const [activeExamTab, setActiveExamTab] = useState('ALL');
+  // Dynamically extract ONLY the available slots, exam types, years, and semesters for THIS subject
+  const availableSlots = useMemo(() => {
+    return Array.from(new Set(subjectPapers.map(p => p.slot_tag))).sort();
+  }, [subjectPapers]);
+
+  const availableExamTypes = useMemo(() => {
+    return Array.from(new Set(subjectPapers.map(p => p.exam_type))).sort();
+  }, [subjectPapers]);
+
+  const availableYears = useMemo(() => {
+    return Array.from(new Set(subjectPapers.map(p => p.academic_year))).sort().reverse();
+  }, [subjectPapers]);
+
+  const availableSemesters = useMemo(() => {
+    return Array.from(new Set(subjectPapers.map(p => p.semester))).sort();
+  }, [subjectPapers]);
+
+  // Filter States Inside Subject Page
+  const [selectedExams, setSelectedExams] = useState([]);
+  const [selectedSlots, setSelectedSlots] = useState([]);
+  const [selectedYears, setSelectedYears] = useState([]);
+  const [selectedSemesters, setSelectedSemesters] = useState([]);
+  const [onlyAnswerKeys, setOnlyAnswerKeys] = useState(false);
+  const [sortBy, setSortBy] = useState('year-desc');
+
+  // Filter Console Drawer Toggle
+  const [showFilterConsole, setShowFilterConsole] = useState(true);
   const [isZipping, setIsZipping] = useState(false);
 
-  const displayedPapers = activeExamTab === 'ALL'
-    ? subjectPapers
-    : subjectPapers.filter(p => p.exam_type === activeExamTab);
+  // Filter Logic inside Subject View
+  const filteredSubjectPapers = useMemo(() => {
+    return subjectPapers.filter(paper => {
+      // Answer Key Filter
+      if (onlyAnswerKeys && !paper.has_answer_key) return false;
+
+      // Exam Category Filter
+      if (selectedExams.length > 0 && !selectedExams.includes(paper.exam_type)) return false;
+
+      // Slot Filter (Only matching available slots)
+      if (selectedSlots.length > 0 && !selectedSlots.includes(paper.slot_tag)) return false;
+
+      // Year Filter
+      if (selectedYears.length > 0 && !selectedYears.includes(paper.academic_year)) return false;
+
+      // Semester Filter
+      if (selectedSemesters.length > 0 && !selectedSemesters.includes(paper.semester)) return false;
+
+      return true;
+    }).sort((a, b) => {
+      if (sortBy === 'year-desc') {
+        return b.academic_year.localeCompare(a.academic_year);
+      } else if (sortBy === 'year-asc') {
+        return a.academic_year.localeCompare(b.academic_year);
+      }
+      return 0;
+    });
+  }, [subjectPapers, onlyAnswerKeys, selectedExams, selectedSlots, selectedYears, selectedSemesters, sortBy]);
+
+  const toggleFilter = (list, setList, val) => {
+    setList(prev => prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]);
+  };
 
   // Download All Papers as ZIP for this subject
   const handleDownloadAllSubjectZip = async () => {
-    if (subjectPapers.length === 0) {
+    if (filteredSubjectPapers.length === 0) {
       onToast('No papers available to download.');
       return;
     }
 
     setIsZipping(true);
-    onToast(`Downloading all ${subjectPapers.length} paper(s) for ${course.course_code}...`);
+    onToast(`Downloading ${filteredSubjectPapers.length} paper(s) for ${course.course_code}...`);
 
     try {
       const zip = new JSZip();
-      for (const paper of subjectPapers) {
+      for (const paper of filteredSubjectPapers) {
         const filename = `${paper.course_code}_${paper.exam_type}_${paper.slot_tag}_${paper.academic_year}.jpg`;
         try {
           const resp = await fetch(paper.file_url);
@@ -52,7 +108,7 @@ export default function SubjectDetailView({
       const content = await zip.generateAsync({ type: 'blob' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(content);
-      link.download = `${course.course_code}_all_papers.zip`;
+      link.download = `${course.course_code}_papers_bundle.zip`;
       link.click();
 
       onToast(`Downloaded ZIP for ${course.course_code}!`);
@@ -70,7 +126,7 @@ export default function SubjectDetailView({
         <div className="detail-breadcrumb">
           <button className="btn btn-cyber-outline btn-sm" onClick={onBack}>
             <ArrowLeft size={15} />
-            <span>Back to Catalogue</span>
+            <span>BACK TO MAIN CATALOGUE</span>
           </button>
           <span className="breadcrumb-path">
             Catalogue / <strong style={{ color: 'var(--amber-accent)' }}>{course.course_code}</strong>
@@ -83,54 +139,154 @@ export default function SubjectDetailView({
             <span className="code-pill-large">{course.course_code}</span>
             <span className="papers-count-badge">
               <FileText size={14} />
-              <span>{subjectPapers.length} Papers Available</span>
+              <span>{subjectPapers.length} PAPERS UPLOADED</span>
             </span>
           </div>
 
           <h1 className="subject-banner-title">{course.subject_name}</h1>
           <p className="subject-banner-desc">
-            Complete question paper repository including CAT-1, CAT-2, and Term End (FAT) exams across Fall and Winter semesters.
+            Complete question paper repository for {course.subject_name} ({course.course_code}). Filters below automatically display available timetable slots, exam categories, and academic years for this course.
           </p>
 
           <div className="banner-actions">
             <button
               className="btn btn-cyber-amber"
               onClick={handleDownloadAllSubjectZip}
-              disabled={isZipping || subjectPapers.length === 0}
+              disabled={isZipping || filteredSubjectPapers.length === 0}
             >
               <Download size={16} />
-              <span>{isZipping ? 'Packaging ZIP...' : `Download All Papers ZIP (${subjectPapers.length})`}</span>
+              <span>{isZipping ? 'PACKAGING ZIP...' : `DOWNLOAD SELECTED PAPERS ZIP (${filteredSubjectPapers.length})`}</span>
             </button>
           </div>
         </div>
 
-        {/* Exam Type Tabs */}
-        <div className="exam-tabs-bar">
-          {['ALL', 'CAT-1', 'CAT-2', 'FAT'].map(tab => (
+        {/* Dynamic Subject Filter Deck (Shows Slots Only According to Availability) */}
+        <div className="cyber-filter-deck cyber-card">
+          <div className="deck-bar-header">
             <button
-              key={tab}
-              className={`exam-tab-btn ${activeExamTab === tab ? 'active' : ''}`}
-              onClick={() => setActiveExamTab(tab)}
+              className="btn btn-cyber-outline btn-sm"
+              onClick={() => setShowFilterConsole(!showFilterConsole)}
             >
-              <span>{tab === 'ALL' ? 'All Papers' : tab}</span>
-              <span className="tab-count">
-                {tab === 'ALL'
-                  ? subjectPapers.length
-                  : subjectPapers.filter(p => p.exam_type === tab).length}
-              </span>
+              <Filter size={15} />
+              <span>{showFilterConsole ? 'HIDE SUBJECT FILTERS' : 'SHOW SUBJECT FILTERS'}</span>
             </button>
-          ))}
+
+            {/* Answer Key Quick Toggle */}
+            <label className="cyber-toggle-label">
+              <input
+                type="checkbox"
+                checked={onlyAnswerKeys}
+                onChange={e => setOnlyAnswerKeys(e.target.checked)}
+              />
+              <span className="cyber-toggle-box"></span>
+              <span>ANSWER KEY ONLY</span>
+            </label>
+          </div>
+
+          {/* Expandable Filter Console showing ONLY available slots */}
+          {showFilterConsole && (
+            <div className="filter-console-body">
+              {/* Dynamic Available Slots Row */}
+              <div className="filter-row">
+                <span className="filter-row-title">AVAILABLE SLOTS:</span>
+                <div className="filter-chips">
+                  {availableSlots.length === 0 ? (
+                    <span className="no-options-text">No slots found</span>
+                  ) : (
+                    availableSlots.map(slot => (
+                      <button
+                        key={slot}
+                        className={`chip ${selectedSlots.includes(slot) ? 'active' : ''}`}
+                        onClick={() => toggleFilter(selectedSlots, setSelectedSlots, slot)}
+                      >
+                        Slot {slot}
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Dynamic Exam Categories */}
+              {availableExamTypes.length > 0 && (
+                <div className="filter-row">
+                  <span className="filter-row-title">EXAM TYPE:</span>
+                  <div className="filter-chips">
+                    {availableExamTypes.map(exam => (
+                      <button
+                        key={exam}
+                        className={`chip ${selectedExams.includes(exam) ? 'active' : ''}`}
+                        onClick={() => toggleFilter(selectedExams, setSelectedExams, exam)}
+                      >
+                        {exam}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Dynamic Academic Years */}
+              {availableYears.length > 0 && (
+                <div className="filter-row">
+                  <span className="filter-row-title">ACADEMIC YEAR:</span>
+                  <div className="filter-chips">
+                    {availableYears.map(yr => (
+                      <button
+                        key={yr}
+                        className={`chip ${selectedYears.includes(yr) ? 'active' : ''}`}
+                        onClick={() => toggleFilter(selectedYears, setSelectedYears, yr)}
+                      >
+                        {yr}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Dynamic Semesters */}
+              {availableSemesters.length > 0 && (
+                <div className="filter-row">
+                  <span className="filter-row-title">SEMESTER:</span>
+                  <div className="filter-chips">
+                    {availableSemesters.map(sem => (
+                      <button
+                        key={sem}
+                        className={`chip ${selectedSemesters.includes(sem) ? 'active' : ''}`}
+                        onClick={() => toggleFilter(selectedSemesters, setSelectedSemesters, sem)}
+                      >
+                        {sem}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Papers Grid */}
         <div className="subject-papers-grid">
-          {displayedPapers.length === 0 ? (
+          <div className="matrix-results-bar" style={{ gridColumn: '1 / -1' }}>
+            <span>SHOWING {filteredSubjectPapers.length} EXAM PAPERS FOR {course.course_code}</span>
+            <div className="sort-box">
+              <span>SORT:</span>
+              <select
+                className="cyber-select-mini"
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+              >
+                <option value="year-desc">YEAR (NEW TO OLD)</option>
+                <option value="year-asc">YEAR (OLD TO NEW)</option>
+              </select>
+            </div>
+          </div>
+
+          {filteredSubjectPapers.length === 0 ? (
             <div className="empty-subject-card cyber-card">
-              <h3>No papers found for category {activeExamTab}</h3>
-              <p>Try selecting a different exam tab above.</p>
+              <h3>NO PAPERS MATCH YOUR FILTERS FOR {course.course_code}</h3>
+              <p>Try clearing some slot or exam filters above.</p>
             </div>
           ) : (
-            displayedPapers.map(paper => (
+            filteredSubjectPapers.map(paper => (
               <div key={paper.id} className="subject-paper-card cyber-card">
                 {/* Thumbnail Preview */}
                 <div className="paper-thumb-box" onClick={() => onViewPaper(paper)}>
@@ -138,7 +294,7 @@ export default function SubjectDetailView({
                   <div className="thumb-hover-overlay">
                     <button className="btn btn-cyber-red btn-sm">
                       <Eye size={14} />
-                      <span>Inspect Paper</span>
+                      <span>INSPECT SCAN</span>
                     </button>
                   </div>
                 </div>
@@ -150,13 +306,13 @@ export default function SubjectDetailView({
                     <span className="cyber-pill pill-slot">Slot {paper.slot_tag}</span>
                     {paper.has_answer_key && (
                       <span className="key-badge">
-                        <CheckCircle size={12} /> Answer Key
+                        <CheckCircle size={12} /> KEY INCLUDED
                       </span>
                     )}
                   </div>
 
                   <h3 className="paper-title" onClick={() => onViewPaper(paper)}>
-                    {paper.exam_type} — {paper.slot_tag} ({paper.academic_year})
+                    {paper.exam_type} — Slot {paper.slot_tag} ({paper.academic_year})
                   </h3>
 
                   <div className="paper-meta-row">
@@ -172,7 +328,7 @@ export default function SubjectDetailView({
                       onClick={() => onViewPaper(paper)}
                     >
                       <Eye size={14} />
-                      <span>View Full Paper</span>
+                      <span>VIEW FULL PAPER</span>
                     </button>
                   </div>
                 </div>
@@ -197,15 +353,15 @@ export default function SubjectDetailView({
           margin-bottom: 1.5rem;
         }
         .breadcrumb-path {
-          font-family: var(--font-mono);
-          font-size: 0.85rem;
+          font-family: var(--font-pixel);
+          font-size: 0.9rem;
           color: var(--text-muted);
         }
         .subject-banner-card {
           padding: 2.25rem;
-          margin-bottom: 2rem;
+          margin-bottom: 1.75rem;
           border-color: var(--border-crimson);
-          background: rgba(14, 2, 2, 0.95);
+          background: rgba(10, 1, 1, 0.95);
         }
         .banner-top-row {
           display: flex;
@@ -214,69 +370,124 @@ export default function SubjectDetailView({
           margin-bottom: 0.75rem;
         }
         .code-pill-large {
-          font-family: var(--font-mono);
-          font-size: 1rem;
+          font-family: var(--font-pixel);
+          font-size: 1.1rem;
           font-weight: 800;
           color: var(--amber-accent);
-          background: rgba(224, 139, 38, 0.18);
+          background: rgba(224, 139, 38, 0.2);
           padding: 0.25rem 0.85rem;
-          border-radius: 6px;
           border: 1px solid rgba(224, 139, 38, 0.4);
         }
         .papers-count-badge {
           display: flex;
           align-items: center;
           gap: 0.4rem;
-          font-family: var(--font-mono);
-          font-size: 0.8rem;
+          font-family: var(--font-arcade);
+          font-size: 0.65rem;
           color: var(--text-muted);
         }
         .subject-banner-title {
-          font-size: 2.2rem;
+          font-size: 2.4rem;
           font-weight: 900;
           margin-bottom: 0.5rem;
+          font-family: var(--font-pixel);
         }
         .subject-banner-desc {
           color: var(--text-muted);
-          font-size: 0.95rem;
-          max-width: 700px;
+          font-size: 1rem;
+          max-width: 720px;
           margin-bottom: 1.5rem;
+          font-family: var(--font-pixel);
         }
         .banner-actions {
           display: flex;
           gap: 1rem;
         }
-        .exam-tabs-bar {
-          display: flex;
-          gap: 0.75rem;
-          margin-bottom: 1.75rem;
-          border-bottom: 1px solid var(--border-dark);
-          padding-bottom: 0.85rem;
+        .cyber-filter-deck {
+          padding: 1.25rem;
+          margin-bottom: 2rem;
         }
-        .exam-tab-btn {
+        .deck-bar-header {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+        .cyber-toggle-label {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          padding: 0.55rem 1.1rem;
-          border-radius: 8px;
-          background: rgba(14, 2, 2, 0.7);
-          border: 1px solid var(--border-dark);
-          color: var(--text-muted);
-          font-family: var(--font-mono);
-          font-size: 0.85rem;
+          font-size: 0.88rem;
+          color: var(--text-cream);
           cursor: pointer;
-          transition: all 0.2s ease;
+          font-family: var(--font-pixel);
         }
-        .exam-tab-btn.active {
+        .filter-console-body {
+          margin-top: 1.25rem;
+          padding-top: 1.25rem;
+          border-top: 2px solid var(--border-dark);
+          display: flex;
+          flex-direction: column;
+          gap: 0.85rem;
+        }
+        .filter-row {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+        .filter-row-title {
+          font-family: var(--font-arcade);
+          font-size: 0.65rem;
+          font-weight: 700;
+          color: var(--crimson-main);
+          min-width: 130px;
+        }
+        .filter-chips {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.45rem;
+        }
+        .no-options-text {
+          font-size: 0.82rem;
+          color: var(--text-subtle);
+          font-family: var(--font-pixel);
+        }
+        .chip {
+          padding: 0.25rem 0.65rem;
+          background: rgba(0, 0, 0, 0.6);
+          border: 2px solid var(--border-dark);
+          color: var(--text-muted);
+          font-size: 0.85rem;
+          font-family: var(--font-pixel);
+          cursor: pointer;
+          transition: all 0.15s ease;
+          box-shadow: 2px 2px 0px #000;
+        }
+        .chip:hover, .chip.active {
+          border-color: var(--crimson-main);
           background: var(--crimson-main);
           color: #ffffff;
-          border-color: var(--crimson-bright);
+          box-shadow: 3px 3px 0px rgba(211, 7, 14, 0.5);
         }
-        .tab-count {
-          background: rgba(0, 0, 0, 0.5);
-          padding: 0.1rem 0.45rem;
-          border-radius: 999px;
-          font-size: 0.72rem;
+        .matrix-results-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-family: var(--font-arcade);
+          font-size: 0.65rem;
+          color: var(--text-muted);
+          margin-bottom: 1rem;
+        }
+        .cyber-select-mini {
+          background: rgba(0, 0, 0, 0.8);
+          border: 2px solid var(--border-dark);
+          color: var(--text-cream);
+          padding: 0.25rem 0.5rem;
+          font-family: var(--font-pixel);
+          font-size: 0.85rem;
+          margin-left: 0.4rem;
         }
         .subject-papers-grid {
           display: grid;
@@ -300,6 +511,7 @@ export default function SubjectDetailView({
           background: #000;
           cursor: pointer;
           overflow: hidden;
+          border-bottom: 2px solid var(--border-dark);
         }
         .paper-thumb-box img {
           width: 100%;
@@ -313,7 +525,7 @@ export default function SubjectDetailView({
         .thumb-hover-overlay {
           position: absolute;
           inset: 0;
-          background: rgba(0, 0, 0, 0.75);
+          background: rgba(0, 0, 0, 0.8);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -337,9 +549,10 @@ export default function SubjectDetailView({
           flex-wrap: wrap;
         }
         .paper-title {
-          font-size: 1.05rem;
+          font-size: 1.1rem;
           font-weight: 700;
           cursor: pointer;
+          font-family: var(--font-pixel);
         }
         .paper-title:hover {
           color: var(--crimson-bright);
@@ -348,9 +561,9 @@ export default function SubjectDetailView({
           display: flex;
           align-items: center;
           gap: 1rem;
-          font-size: 0.78rem;
+          font-size: 0.82rem;
           color: var(--text-muted);
-          font-family: var(--font-mono);
+          font-family: var(--font-pixel);
         }
         .meta-item {
           display: flex;
