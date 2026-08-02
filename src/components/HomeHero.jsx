@@ -23,7 +23,7 @@ export default function HomeHero({
 
         {/* Hero Search Box */}
         <div className="hero-search-container cyber-card">
-          <Search size={22} className="search-icon" />
+          <Search size={20} className="hero-search-icon" />
           <input
             type="text"
             className="hero-input"
@@ -60,26 +60,31 @@ export default function HomeHero({
           width: 100%;
           display: flex;
           align-items: center;
-          padding: 0.65rem 1.25rem;
+          gap: 0.85rem;
+          padding: 0.75rem 1.4rem;
           border-radius: 999px;
           border-color: var(--border-crimson);
           margin-top: 0.75rem;
+          background: rgba(14, 2, 2, 0.95);
         }
-        .search-icon {
+        .hero-search-icon {
           color: var(--crimson-main);
-          margin-right: 0.75rem;
+          flex-shrink: 0;
+          display: block;
         }
         .hero-input {
           flex: 1;
+          min-width: 0;
           background: transparent;
           border: none;
           outline: none;
           color: var(--text-white);
-          font-size: 1.05rem;
-          padding: 0.5rem 0;
+          font-size: 1rem;
+          padding: 0.4rem 0;
           font-family: var(--font-sans);
         }
         .clear-hero-btn {
+          flex-shrink: 0;
           background: rgba(255, 255, 255, 0.08);
           border: none;
           color: var(--text-muted);
@@ -88,9 +93,16 @@ export default function HomeHero({
           font-size: 0.78rem;
           cursor: pointer;
         }
+        .clear-hero-btn:hover {
+          background: var(--crimson-main);
+          color: #fff;
+        }
         @media (max-width: 768px) {
           .split-title {
             font-size: 2.8rem;
+          }
+          .hero-input {
+            font-size: 0.88rem;
           }
         }
       `}</style>

@@ -20,12 +20,12 @@ export default function Header({
           <span className="slash-tag">/&gt;</span>
         </div>
 
-        {/* Center Search Bar */}
+        {/* Center Search Bar using Flexbox */}
         <div className="header-search-box">
-          <Search size={15} className="search-icon" />
+          <Search size={16} className="header-search-icon" />
           <input
             type="text"
-            className="cyber-input search-input"
+            className="header-search-input"
             placeholder="Search course code or subject name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -100,34 +100,49 @@ export default function Header({
           margin-left: 0.2rem;
         }
         .header-search-box {
-          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+          background: rgba(0, 0, 0, 0.7);
+          border: 1px solid var(--border-dark);
+          border-radius: 999px;
+          padding: 0.45rem 1rem;
           flex: 1;
           max-width: 440px;
+          transition: all 0.2s ease;
         }
-        .search-icon {
-          position: absolute;
-          left: 0.85rem;
-          top: 50%;
-          transform: translateY(-50%);
+        .header-search-box:focus-within {
+          border-color: var(--crimson-main);
+          box-shadow: 0 0 0 3px rgba(211, 7, 14, 0.25);
+        }
+        .header-search-icon {
           color: var(--text-muted);
+          flex-shrink: 0;
+          display: block;
         }
-        .search-input {
-          padding-left: 2.4rem;
+        .header-search-input {
+          flex: 1;
+          min-width: 0;
+          background: transparent;
+          border: none;
+          outline: none;
+          color: var(--text-white);
+          font-family: var(--font-sans);
           font-size: 0.88rem;
-          border-radius: 999px;
-          padding-top: 0.5rem;
-          padding-bottom: 0.5rem;
+          padding: 0;
         }
         .clear-btn {
-          position: absolute;
-          right: 0.85rem;
-          top: 50%;
-          transform: translateY(-50%);
+          flex-shrink: 0;
           background: none;
           border: none;
           color: var(--text-muted);
           font-size: 1rem;
           cursor: pointer;
+          line-height: 1;
+          padding: 0 0.2rem;
+        }
+        .clear-btn:hover {
+          color: var(--crimson-bright);
         }
         .header-right {
           display: flex;
