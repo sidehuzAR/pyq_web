@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header.jsx';
 import HomeHero from './components/HomeHero.jsx';
 import Catalogue from './components/Catalogue.jsx';
+import SubjectDetailView from './components/SubjectDetailView.jsx';
 import PaperViewerModal from './components/PaperViewerModal.jsx';
 import UploadModal from './components/UploadModal.jsx';
 import AdminPortal from './components/AdminPortal.jsx';
@@ -23,6 +24,9 @@ export default function App() {
   const [approvedPapers, setApprovedPapers] = useState([]);
   const [pendingPapers, setPendingPapers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Selected Subject Detail Page State (e.g. 'BPHY101L' or null)
+  const [selectedSubjectCode, setSelectedSubjectCode] = useState(null);
 
   // Modals & Active Viewer
   const [activePaperModal, setActivePaperModal] = useState(null);
@@ -92,12 +96,16 @@ export default function App() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         courses={courses}
+        onSelectSubject={(code) => setSelectedSubjectCode(code)}
         theme={theme}
         setTheme={setTheme}
         onOpenUpload={() => setShowUploadModal(true)}
         onNavigateAdmin={() => setActiveView('admin')}
         activeView={activeView}
-        setActiveView={setActiveView}
+        setActiveView={(view) => {
+          setActiveView(view);
+          if (view === 'public') setSelectedSubjectCode(null);
+        }}
       />
 
       {/* View Switcher */}
@@ -111,16 +119,26 @@ export default function App() {
           onToast={showToast}
           onBackToMain={() => setActiveView('public')}
         />
+      ) : selectedSubjectCode ? (
+        /* Dedicated Subject Detail Page View */
+        <SubjectDetailView
+          courseCode={selectedSubjectCode}
+          courses={courses}
+          papers={approvedPapers}
+          onBack={() => setSelectedSubjectCode(null)}
+          onViewPaper={(paper) => setActivePaperModal(paper)}
+          onToast={showToast}
+        />
       ) : (
+        /* Main Public Home Catalogue View */
         <>
-          {/* Hero Banner */}
           <HomeHero />
 
-          {/* Exam Catalogue Matrix */}
           <Catalogue
             papers={approvedPapers}
             courses={courses}
             searchQuery={searchQuery}
+            onSelectSubject={(code) => setSelectedSubjectCode(code)}
             onViewPaper={(paper) => setActivePaperModal(paper)}
             onToast={showToast}
           />

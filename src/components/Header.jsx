@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Sun, Moon, ChevronRight, X } from 'lucide-react';
+import { Search, Sun, Moon, ChevronRight } from 'lucide-react';
 
 export default function Header({
   searchQuery,
   setSearchQuery,
   courses = [],
+  onSelectSubject,
   theme,
   setTheme,
   onOpenUpload,
@@ -33,7 +34,11 @@ export default function Header({
   }, []);
 
   const handleSelectCourse = (code) => {
-    setSearchQuery(code);
+    if (onSelectSubject) {
+      onSelectSubject(code);
+    } else {
+      setSearchQuery(code);
+    }
     setShowDropdown(false);
   };
 

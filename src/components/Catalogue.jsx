@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Filter, CheckSquare, Square, Download, Eye, ChevronDown, CheckCircle } from 'lucide-react';
+import { Filter, CheckSquare, Square, Download, Eye, ChevronDown, CheckCircle, FolderOpen } from 'lucide-react';
 import JSZip from 'jszip';
 import { AVAILABLE_SLOTS, ACADEMIC_YEARS, SEMESTERS, EXAM_TYPES } from '../data/initialData.js';
 
@@ -7,6 +7,7 @@ export default function Catalogue({
   papers,
   courses,
   searchQuery,
+  onSelectSubject,
   onViewPaper,
   onToast
 }) {
@@ -131,7 +132,7 @@ export default function Catalogue({
             <span>◇</span> EXAM CATALOGUE MATRIX
           </div>
           <p className="catalogue-sub">
-            Filter past exam papers across VIT timetable slots and course categories.
+            Filter past exam papers across VIT timetable slots and course categories. Click any subject to open its dedicated page.
           </p>
         </div>
 
@@ -303,12 +304,12 @@ export default function Catalogue({
                     <div className="corner-node"></div>
 
                     {/* Image Preview Thumbnail */}
-                    <div className="card-thumb-box" onClick={() => onViewPaper(paper)}>
+                    <div className="card-thumb-box" onClick={() => onSelectSubject(paper.course_code)}>
                       <img src={paper.file_url} alt={paper.subject_name} loading="lazy" />
                       <div className="thumb-hover-action">
                         <button className="btn btn-cyber-red btn-sm">
-                          <Eye size={14} />
-                          <span>View Scan</span>
+                          <FolderOpen size={14} />
+                          <span>Open Subject Page</span>
                         </button>
                       </div>
 
@@ -327,7 +328,9 @@ export default function Catalogue({
                     {/* Content Details */}
                     <div className="card-body">
                       <div className="card-top-info">
-                        <span className="course-code-badge">{paper.course_code}</span>
+                        <span className="course-code-badge" onClick={() => onSelectSubject(paper.course_code)}>
+                          {paper.course_code}
+                        </span>
                         {paper.has_answer_key && (
                           <span className="key-badge">
                             <CheckCircle size={11} /> Answer Key
@@ -335,7 +338,7 @@ export default function Catalogue({
                         )}
                       </div>
 
-                      <h3 className="subject-title" onClick={() => onViewPaper(paper)}>
+                      <h3 className="subject-title" onClick={() => onSelectSubject(paper.course_code)}>
                         {paper.subject_name}
                       </h3>
 
@@ -359,8 +362,17 @@ export default function Catalogue({
 
                         <button
                           className="btn-icon-mini"
-                          title="Download PDF/Image"
-                          onClick={() => {
+                          title="Open Subject Page"
+                          onClick={() => onSelectSubject(paper.course_code)}
+                        >
+                          <FolderOpen size={14} />
+                        </button>
+
+                        <button
+                          className="btn-icon-mini"
+                          title="Download Image"
+                          onClick={(e) => {
+                            e.stopPropagation();
                             const link = document.createElement('a');
                             link.href = paper.file_url;
                             link.download = `${paper.course_code}_${paper.exam_type}_${paper.slot_tag}.jpg`;
@@ -583,6 +595,10 @@ export default function Catalogue({
           font-size: 0.78rem;
           font-weight: 700;
           color: var(--amber-accent);
+          cursor: pointer;
+        }
+        .course-code-badge:hover {
+          text-decoration: underline;
         }
         .key-badge {
           display: flex;
@@ -636,7 +652,7 @@ export default function Catalogue({
           border-top: 1px solid var(--border-dark);
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          gap: 0.5rem;
         }
         .select-toggle-label {
           display: flex;
@@ -645,6 +661,7 @@ export default function Catalogue({
           font-size: 0.78rem;
           color: var(--text-muted);
           cursor: pointer;
+          margin-right: auto;
         }
         .btn-icon-mini {
           background: rgba(255, 255, 255, 0.06);
