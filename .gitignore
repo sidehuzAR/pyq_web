@@ -1,0 +1,25 @@
+# Node dependencies
+node_modules/
+.npm
+
+# Production build output
+dist/
+dist-ssr/
+*.local
+
+# Environment variables
+.env
+.env.*
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# System files
+.DS_Store
+Thumbs.db
