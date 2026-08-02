@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Filter, CheckSquare, Square, Download, Eye, Pin, ArrowUpDown, ChevronDown, CheckCircle, Sparkles } from 'lucide-react';
+import { Filter, CheckSquare, Square, Download, Eye, ChevronDown, CheckCircle } from 'lucide-react';
 import JSZip from 'jszip';
 import { AVAILABLE_SLOTS, ACADEMIC_YEARS, SEMESTERS, EXAM_TYPES } from '../data/initialData.js';
 
@@ -7,8 +7,6 @@ export default function Catalogue({
   papers,
   courses,
   searchQuery,
-  pinnedSubjects,
-  onTogglePin,
   onViewPaper,
   onToast
 }) {
@@ -109,7 +107,7 @@ export default function Catalogue({
       const zipContent = await zip.generateAsync({ type: 'blob' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(zipContent);
-      link.download = `papersvitc_bundle_${Date.now()}.zip`;
+      link.download = `pyarchive_bundle_${Date.now()}.zip`;
       link.click();
 
       onToast(`Downloaded ${selectedPaperIds.length} papers as ZIP!`);
@@ -295,7 +293,6 @@ export default function Catalogue({
             ) : (
               filteredPapers.map(paper => {
                 const isSelected = selectedPaperIds.includes(paper.id);
-                const isPinned = pinnedSubjects.includes(paper.course_code);
 
                 return (
                   <div
@@ -324,18 +321,6 @@ export default function Catalogue({
                         }}
                       >
                         {isSelected ? <CheckSquare size={16} /> : <Square size={16} />}
-                      </button>
-
-                      {/* Pin Button */}
-                      <button
-                        className={`pin-btn ${isPinned ? 'active' : ''}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onTogglePin(paper.course_code);
-                          onToast(isPinned ? `Unpinned ${paper.course_code}` : `Pinned ${paper.course_code}`);
-                        }}
-                      >
-                        <Pin size={13} />
                       </button>
                     </div>
 
@@ -580,20 +565,6 @@ export default function Catalogue({
         }
         .select-check-btn.checked {
           color: var(--amber-accent);
-        }
-        .pin-btn {
-          position: absolute;
-          top: 0.6rem;
-          right: 1.8rem;
-          background: rgba(0, 0, 0, 0.75);
-          border: none;
-          color: var(--text-muted);
-          cursor: pointer;
-          padding: 0.25rem;
-          border-radius: 50%;
-        }
-        .pin-btn.active {
-          color: var(--crimson-bright);
         }
         .card-body {
           padding: 1rem;

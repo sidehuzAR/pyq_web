@@ -11,9 +11,7 @@ import {
   getApprovedPapers,
   getPendingPapers,
   approvePendingPaper,
-  rejectPendingPaper,
-  getPinnedSubjects,
-  togglePinSubject
+  rejectPendingPaper
 } from './utils/storage.js';
 
 export default function App() {
@@ -24,7 +22,6 @@ export default function App() {
   const [courses, setCourses] = useState([]);
   const [approvedPapers, setApprovedPapers] = useState([]);
   const [pendingPapers, setPendingPapers] = useState([]);
-  const [pinnedSubjects, setPinnedSubjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Modals & Active Viewer
@@ -39,7 +36,6 @@ export default function App() {
     setCourses(getStoredCourses());
     setApprovedPapers(getApprovedPapers());
     setPendingPapers(getPendingPapers());
-    setPinnedSubjects(getPinnedSubjects());
 
     // Simple route check for /admin or #admin
     if (window.location.pathname === '/admin' || window.location.hash === '#admin') {
@@ -59,12 +55,6 @@ export default function App() {
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
     }, 4000);
-  };
-
-  // Pin Toggle Handler
-  const handleTogglePin = (code) => {
-    const updated = togglePinSubject(code);
-    setPinnedSubjects(updated);
   };
 
   // Admin Actions
@@ -93,7 +83,7 @@ export default function App() {
       {/* Cyber Right-Side Circuit Rail Graphics */}
       <div className="cyber-circuit-rail">
         <div className="circuit-node active"></div>
-        <span className="rail-label">PAPERSVITC ARCHIVE</span>
+        <span className="rail-label">PYARCHIVE ENGINE</span>
         <div className="circuit-node"></div>
       </div>
 
@@ -126,18 +116,12 @@ export default function App() {
           <HomeHero
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            courses={courses}
-            pinnedSubjects={pinnedSubjects}
-            onTogglePin={handleTogglePin}
-            onSelectSubject={(code) => setSearchQuery(code)}
           />
 
           <Catalogue
             papers={approvedPapers}
             courses={courses}
             searchQuery={searchQuery}
-            pinnedSubjects={pinnedSubjects}
-            onTogglePin={handleTogglePin}
             onViewPaper={(paper) => setActivePaperModal(paper)}
             onToast={showToast}
           />
@@ -148,7 +132,7 @@ export default function App() {
       <footer className="hackclub-footer">
         <div className="footer-inner">
           <div>
-            <span style={{ color: 'var(--crimson-main)', fontWeight: 800 }}>♦ PAPERSVITC</span>
+            <span style={{ color: 'var(--crimson-main)', fontWeight: 800 }}>♦ PYARCHIVE</span>
             <span> — Built by Students for Students.</span>
           </div>
 

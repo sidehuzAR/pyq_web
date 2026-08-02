@@ -1,14 +1,16 @@
-// LocalStorage Persistence Service for papersvitc
-
+// LocalStorage Persistence Service for pyarchive
 import { INITIAL_COURSES, INITIAL_PAPERS, INITIAL_PENDING_PAPERS } from '../data/initialData.js';
 
 const STORAGE_KEYS = {
-  COURSES: 'papersvitc_courses_v1',
-  PAPERS: 'papersvitc_approved_papers_v1',
-  PENDING_PAPERS: 'papersvitc_pending_papers_v1',
-  PINNED_SUBJECTS: 'papersvitc_pinned_subjects_v1',
-  UPLOAD_COUNT: 'papersvitc_upload_count_v1'
+  COURSES: 'pyarchive_courses_v1',
+  PAPERS: 'pyarchive_approved_papers_v1',
+  PENDING_PAPERS: 'pyarchive_pending_papers_v1',
+  UPLOAD_COUNT: 'pyarchive_upload_count_v1'
 };
+
+// Rate limiting: Max 5 uploads per hour per user
+const MAX_UPLOADS_PER_HOUR = 5;
+const ONE_HOUR_MS = 60 * 60 * 1000;
 
 export function getStoredCourses() {
   const data = localStorage.getItem(STORAGE_KEYS.COURSES);
@@ -16,20 +18,22 @@ export function getStoredCourses() {
     localStorage.setItem(STORAGE_KEYS.COURSES, JSON.stringify(INITIAL_COURSES));
     return INITIAL_COURSES;
   }
-  return JSON.parse(data);
+  try {
+    return JSON.parse(data);
+  } catch {
+    return INITIAL_COURSES;
+  }
 }
 
 export function saveCourse(newCourse) {
-  const courses = getStoredCourses();
-  // Check if course code already exists
-  const existingIndex = courses.findIndex(c => c.course_code.toLowerCase() === newCourse.course_code.toLowerCase());
-  if (existingIndex >= 0) {
-    courses[existingIndex] = newCourse;
-  } else {
-    courses.push(newCourse);
-  }
-  localStorage.setItem(STORAGE_KEYS.COURSES, JSON.stringify(courses));
-  return courses;
+  const current = getStoredCourses();
+  // Avoid duplicates
+  const exists = current.some(c => c.course_code.toLowerCase() === newCourse.course_code.toLowerCase());
+  if (exists) return current;
+
+  const updated = [...current, newCourse];
+  localStorage.setItem(STORAGE_KEYS.COURSES, JSON.stringify(updated));
+  return updated;
 }
 
 export function getApprovedPapers() {
@@ -38,7 +42,11 @@ export function getApprovedPapers() {
     localStorage.setItem(STORAGE_KEYS.PAPERS, JSON.stringify(INITIAL_PAPERS));
     return INITIAL_PAPERS;
   }
-  return JSON.parse(data);
+  try {
+    return JSON.parse(data);
+  } catch {
+    return INITIAL_PAPERS;
+  }
 }
 
 export function getPendingPapers() {
@@ -47,39 +55,53 @@ export function getPendingPapers() {
     localStorage.setItem(STORAGE_KEYS.PENDING_PAPERS, JSON.stringify(INITIAL_PENDING_PAPERS));
     return INITIAL_PENDING_PAPERS;
   }
-  return JSON.parse(data);
+  try {
+    return JSON.parse(data);
+  } catch {
+    return INITIAL_PENDING_PAPERS;
+  }
 }
 
 export function addPendingUpload(uploadData) {
   const pending = getPendingPapers();
-  const newRecord = {
-    id: 'pending-' + Date.now(),
+  const newPaper = {
+    id: `pending_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     ...uploadData,
-    status: 'pending',
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
+    status: 'pending'
   };
-  pending.unshift(newRecord);
-  localStorage.setItem(STORAGE_KEYS.PENDING_PAPERS, JSON.stringify(pending));
-  return newRecord;
+
+  const updatedPending = [newPaper, ...pending];
+  localStorage.setItem(STORAGE_KEYS.PENDING_PAPERS, JSON.stringify(updatedPending));
+  return newPaper;
 }
 
 export function approvePendingPaper(paperId) {
   const pending = getPendingPapers();
+  const target = pending.find(p => p.id === paperId);
+  if (!target) return { pending, approved: getApprovedPapers() };
+
+  const updatedPending = pending.filter(p => p.id !== paperId);
   const approved = getApprovedPapers();
 
-  const index = pending.findIndex(p => p.id === paperId);
-  if (index === -1) return { pending, approved };
+  const livePaper = {
+    ...target,
+    id: `paper_${Date.now()}`,
+    status: 'approved'
+  };
 
-  const [paperToApprove] = pending.splice(index, 1);
-  paperToApprove.status = 'approved';
-  paperToApprove.approved_at = new Date().toISOString();
+  const updatedApproved = [livePaper, ...approved];
 
-  approved.unshift(paperToApprove);
+  localStorage.setItem(STORAGE_KEYS.PENDING_PAPERS, JSON.stringify(updatedPending));
+  localStorage.setItem(STORAGE_KEYS.PAPERS, JSON.stringify(updatedApproved));
 
-  localStorage.setItem(STORAGE_KEYS.PENDING_PAPERS, JSON.stringify(pending));
-  localStorage.setItem(STORAGE_KEYS.PAPERS, JSON.stringify(approved));
+  // Check if course needs to be added automatically
+  saveCourse({
+    course_code: target.course_code,
+    subject_name: target.subject_name
+  });
 
-  return { pending, approved };
+  return { pending: updatedPending, approved: updatedApproved };
 }
 
 export function rejectPendingPaper(paperId) {
@@ -89,41 +111,33 @@ export function rejectPendingPaper(paperId) {
   return updatedPending;
 }
 
-export function getPinnedSubjects() {
-  const data = localStorage.getItem(STORAGE_KEYS.PINNED_SUBJECTS);
-  return data ? JSON.parse(data) : ['BPHY101L', 'BCSE202L'];
-}
-
-export function togglePinSubject(courseCode) {
-  const pinned = getPinnedSubjects();
-  let updated;
-  if (pinned.includes(courseCode)) {
-    updated = pinned.filter(c => c !== courseCode);
-  } else {
-    updated = [...pinned, courseCode];
-  }
-  localStorage.setItem(STORAGE_KEYS.PINNED_SUBJECTS, JSON.stringify(updated));
-  return updated;
-}
-
-// Anti-Bombing Rate Limiter Check (Max 5 uploads per hour)
 export function checkRateLimit() {
-  const raw = localStorage.getItem(STORAGE_KEYS.UPLOAD_COUNT);
   const now = Date.now();
-  const ONE_HOUR = 60 * 60 * 1000;
+  const rawData = localStorage.getItem(STORAGE_KEYS.UPLOAD_COUNT);
+  let record = { count: 0, resetAt: now + ONE_HOUR_MS };
 
-  let state = raw ? JSON.parse(raw) : { count: 0, resetAt: now + ONE_HOUR };
-
-  if (now > state.resetAt) {
-    state = { count: 0, resetAt: now + ONE_HOUR };
+  if (rawData) {
+    try {
+      const parsed = JSON.parse(rawData);
+      if (now > parsed.resetAt) {
+        record = { count: 0, resetAt: now + ONE_HOUR_MS };
+      } else {
+        record = parsed;
+      }
+    } catch {
+      record = { count: 0, resetAt: now + ONE_HOUR_MS };
+    }
   }
 
-  if (state.count >= 5) {
-    const minsLeft = Math.ceil((state.resetAt - now) / (60 * 1000));
-    return { allowed: false, error: `Rate limit reached (max 5 uploads/hour). Please try again in ${minsLeft} minutes.` };
+  if (record.count >= MAX_UPLOADS_PER_HOUR) {
+    const minsLeft = Math.ceil((record.resetAt - now) / 60000);
+    return {
+      allowed: false,
+      error: `Rate limit reached. Max 5 uploads/hour. Please try again in ${minsLeft} minute(s).`
+    };
   }
 
-  state.count += 1;
-  localStorage.setItem(STORAGE_KEYS.UPLOAD_COUNT, JSON.stringify(state));
+  record.count += 1;
+  localStorage.setItem(STORAGE_KEYS.UPLOAD_COUNT, JSON.stringify(record));
   return { allowed: true };
 }
