@@ -41,7 +41,7 @@ export default function App() {
     setPendingPapers(getPendingPapers());
     setPinnedSubjects(getPinnedSubjects());
 
-    // Simple route check for /admin
+    // Simple route check for /admin or #admin
     if (window.location.pathname === '/admin' || window.location.hash === '#admin') {
       setActiveView('admin');
     }
@@ -86,9 +86,16 @@ export default function App() {
   };
 
   return (
-    <div className="app-container">
-      {/* Ambient Background Canvas */}
-      <div className="ambient-background"></div>
+    <div className="app-wrapper">
+      {/* Space Dust & Ambient Background Canvas */}
+      <div className="cyber-canvas-bg"></div>
+
+      {/* Cyber Right-Side Circuit Rail Graphics */}
+      <div className="cyber-circuit-rail">
+        <div className="circuit-node active"></div>
+        <span className="rail-label">PAPERSVITC ARCHIVE</span>
+        <div className="circuit-node"></div>
+      </div>
 
       {/* Header Bar */}
       <Header
@@ -137,16 +144,20 @@ export default function App() {
         </>
       )}
 
-      {/* Public Footer */}
-      <footer className="footer-bar glass-card">
+      {/* Footer */}
+      <footer className="hackclub-footer">
         <div className="footer-inner">
-          <p>© {new Date().getFullYear()} papersvitc — Built by Students for Students.</p>
-          <div className="footer-links">
+          <div>
+            <span style={{ color: 'var(--crimson-main)', fontWeight: 800 }}>♦ PAPERSVITC</span>
+            <span> — Built by Students for Students.</span>
+          </div>
+
+          <div className="footer-right">
             <button
-              className="admin-link-btn"
+              className="admin-gateway-btn"
               onClick={() => setActiveView(activeView === 'admin' ? 'public' : 'admin')}
             >
-              {activeView === 'admin' ? '← Public Portal' : 'Admin Gateway'}
+              {activeView === 'admin' ? '← Public Website' : 'Admin Gateway'}
             </button>
           </div>
         </div>
@@ -173,28 +184,25 @@ export default function App() {
         />
       )}
 
-      {/* Notification Toast Stack */}
+      {/* Toast Notification Stack */}
       <div className="toast-container">
         {toasts.map(t => (
           <div key={t.id} className="toast">
-            <span>⚡</span>
+            <span style={{ color: 'var(--crimson-main)' }}>♦</span>
             <span>{t.message}</span>
           </div>
         ))}
       </div>
 
       <style>{`
-        .footer-bar {
+        .hackclub-footer {
           margin-top: auto;
+          background: rgba(0, 0, 0, 0.95);
+          border-top: 1px solid var(--border-dark);
           padding: 1.5rem;
-          border-radius: 0;
-          border-bottom: 0;
-          border-left: 0;
-          border-right: 0;
-          background: rgba(12, 1, 1, 0.95);
         }
         .footer-inner {
-          max-width: 1300px;
+          max-width: 1350px;
           margin: 0 auto;
           display: flex;
           align-items: center;
@@ -202,16 +210,17 @@ export default function App() {
           font-size: 0.85rem;
           color: var(--text-muted);
         }
-        .admin-link-btn {
+        .admin-gateway-btn {
           background: none;
           border: none;
           color: var(--text-subtle);
-          font-size: 0.82rem;
+          font-family: var(--font-mono);
+          font-size: 0.8rem;
           cursor: pointer;
           transition: color 0.2s ease;
         }
-        .admin-link-btn:hover {
-          color: var(--highlight);
+        .admin-gateway-btn:hover {
+          color: var(--crimson-main);
         }
       `}</style>
     </div>

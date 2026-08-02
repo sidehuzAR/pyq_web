@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Filter, CheckSquare, Square, Download, Eye, Pin, ArrowUpDown, ChevronDown, CheckCircle } from 'lucide-react';
+import { Filter, CheckSquare, Square, Download, Eye, Pin, ArrowUpDown, ChevronDown, CheckCircle, Sparkles } from 'lucide-react';
 import JSZip from 'jszip';
 import { AVAILABLE_SLOTS, ACADEMIC_YEARS, SEMESTERS, EXAM_TYPES } from '../data/initialData.js';
 
@@ -20,11 +20,8 @@ export default function Catalogue({
   const [onlyAnswerKeys, setOnlyAnswerKeys] = useState(false);
   const [sortBy, setSortBy] = useState('year-desc');
 
-  // Accordion Expand States
-  const [expandExams, setExpandExams] = useState(true);
-  const [expandSlots, setExpandSlots] = useState(true);
-  const [expandYears, setExpandYears] = useState(true);
-  const [expandSemesters, setExpandSemesters] = useState(false);
+  // Filter Drawer Toggle State
+  const [showFilterDrawer, setShowFilterDrawer] = useState(true);
 
   // Checkbox Batch Selection State
   const [selectedPaperIds, setSelectedPaperIds] = useState([]);
@@ -92,13 +89,12 @@ export default function Catalogue({
     }
 
     setIsZipping(true);
-    onToast(`Preparing ${selectedPaperIds.length} paper(s) ZIP bundle...`);
+    onToast(`Packaging ${selectedPaperIds.length} paper(s) into ZIP bundle...`);
 
     try {
       const zip = new JSZip();
       const selectedPapers = papers.filter(p => selectedPaperIds.includes(p.id));
 
-      // Fetch images/PDFs and append to zip
       for (const paper of selectedPapers) {
         const filename = `${paper.course_code}_${paper.exam_type}_${paper.slot_tag}_${paper.academic_year}.jpg`;
         try {
@@ -106,8 +102,7 @@ export default function Catalogue({
           const blob = await resp.blob();
           zip.file(filename, blob);
         } catch {
-          // Fallback placeholder text if fetch fails
-          zip.file(filename + '.txt', `Sample paper for ${paper.course_code} ${paper.exam_type}`);
+          zip.file(filename + '.txt', `Sample paper scan for ${paper.course_code}`);
         }
       }
 
@@ -117,9 +112,9 @@ export default function Catalogue({
       link.download = `papersvitc_bundle_${Date.now()}.zip`;
       link.click();
 
-      onToast(`Successfully downloaded ${selectedPaperIds.length} papers as ZIP!`);
-    } catch (err) {
-      onToast('Failed to create ZIP package.');
+      onToast(`Downloaded ${selectedPaperIds.length} papers as ZIP!`);
+    } catch {
+      onToast('Failed to generate ZIP file.');
     } finally {
       setIsZipping(false);
     }
@@ -130,210 +125,172 @@ export default function Catalogue({
   };
 
   return (
-    <div className="catalogue-section">
-      <div className="catalogue-layout">
-        {/* Left Filter Sidebar */}
-        <aside className="filter-sidebar glass-card">
-          <div className="filter-sidebar-header">
-            <div className="filter-title">
-              <Filter size={18} className="filter-icon" />
-              <h3>Filters</h3>
-            </div>
-            {(selectedExams.length > 0 || selectedSlots.length > 0 || selectedYears.length > 0 || selectedSemesters.length > 0 || onlyAnswerKeys) && (
-              <button
-                className="reset-filters-btn"
-                onClick={() => {
-                  setSelectedExams([]);
-                  setSelectedSlots([]);
-                  setSelectedYears([]);
-                  setSelectedSemesters([]);
-                  setOnlyAnswerKeys(false);
-                }}
-              >
-                Reset
-              </button>
-            )}
+    <div className="hackclub-catalogue">
+      <div className="catalogue-container">
+        {/* Top Section Header */}
+        <div className="catalogue-top-header">
+          <div className="section-label">
+            <span>◇</span> EXAM CATALOGUE MATRIX
           </div>
+          <p className="catalogue-sub">
+            Filter past exam papers across VIT timetable slots and course categories.
+          </p>
+        </div>
 
-          {/* Answer Key Available Toggle */}
-          <div className="filter-group">
-            <label className="toggle-checkbox-label">
+        {/* Top Command Deck & Filters Console */}
+        <div className="cyber-filter-deck cyber-card">
+          <div className="deck-bar-header">
+            <button
+              className="btn btn-cyber-outline btn-sm"
+              onClick={() => setShowFilterDrawer(!showFilterDrawer)}
+            >
+              <Filter size={15} />
+              <span>{showFilterDrawer ? 'Hide Filters' : 'Show Filter Deck'}</span>
+            </button>
+
+            {/* Answer Key Quick Toggle */}
+            <label className="cyber-toggle-label">
               <input
                 type="checkbox"
                 checked={onlyAnswerKeys}
-                onChange={(e) => setOnlyAnswerKeys(e.target.checked)}
+                onChange={e => setOnlyAnswerKeys(e.target.checked)}
               />
-              <span className="toggle-custom-box"></span>
-              <span className="toggle-text">Answer Key Available Only</span>
+              <span className="cyber-toggle-box"></span>
+              <span>Answer Key Only</span>
             </label>
-          </div>
 
-          {/* Exam Accordion */}
-          <div className="filter-accordion">
-            <div className="accordion-header" onClick={() => setExpandExams(!expandExams)}>
-              <span>Exams</span>
-              <ChevronDown size={16} style={{ transform: expandExams ? 'rotate(180deg)' : 'rotate(0)' }} />
-            </div>
-            {expandExams && (
-              <div className="accordion-content">
-                {EXAM_TYPES.map(exam => (
-                  <label key={exam} className="filter-check-item">
-                    <input
-                      type="checkbox"
-                      checked={selectedExams.includes(exam)}
-                      onChange={() => toggleFilter(selectedExams, setSelectedExams, exam)}
-                    />
-                    <span>{exam}</span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Slots Accordion */}
-          <div className="filter-accordion">
-            <div className="accordion-header" onClick={() => setExpandSlots(!expandSlots)}>
-              <span>Slots (Theory / Lab)</span>
-              <ChevronDown size={16} style={{ transform: expandSlots ? 'rotate(180deg)' : 'rotate(0)' }} />
-            </div>
-            {expandSlots && (
-              <div className="accordion-content">
-                <div className="slot-section-title">Theory Slots</div>
-                <div className="slot-pill-grid">
-                  {AVAILABLE_SLOTS.theory.map(slot => (
-                    <button
-                      key={slot}
-                      className={`slot-pill ${selectedSlots.includes(slot) ? 'active' : ''}`}
-                      onClick={() => toggleFilter(selectedSlots, setSelectedSlots, slot)}
-                    >
-                      {slot}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="slot-section-title" style={{ marginTop: '0.6rem' }}>Tutorial Slots</div>
-                <div className="slot-pill-grid">
-                  {AVAILABLE_SLOTS.tutorial.map(slot => (
-                    <button
-                      key={slot}
-                      className={`slot-pill ${selectedSlots.includes(slot) ? 'active' : ''}`}
-                      onClick={() => toggleFilter(selectedSlots, setSelectedSlots, slot)}
-                    >
-                      {slot}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="slot-section-title" style={{ marginTop: '0.6rem' }}>Lab Slots</div>
-                <div className="slot-pill-grid">
-                  {AVAILABLE_SLOTS.lab.map(slot => (
-                    <button
-                      key={slot}
-                      className={`slot-pill ${selectedSlots.includes(slot) ? 'active' : ''}`}
-                      onClick={() => toggleFilter(selectedSlots, setSelectedSlots, slot)}
-                    >
-                      {slot}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Academic Years Accordion */}
-          <div className="filter-accordion">
-            <div className="accordion-header" onClick={() => setExpandYears(!expandYears)}>
-              <span>Academic Years</span>
-              <ChevronDown size={16} style={{ transform: expandYears ? 'rotate(180deg)' : 'rotate(0)' }} />
-            </div>
-            {expandYears && (
-              <div className="accordion-content">
-                {ACADEMIC_YEARS.map(yr => (
-                  <label key={yr} className="filter-check-item">
-                    <input
-                      type="checkbox"
-                      checked={selectedYears.includes(yr)}
-                      onChange={() => toggleFilter(selectedYears, setSelectedYears, yr)}
-                    />
-                    <span>{yr}</span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Semesters Accordion */}
-          <div className="filter-accordion">
-            <div className="accordion-header" onClick={() => setExpandSemesters(!expandSemesters)}>
-              <span>Semesters</span>
-              <ChevronDown size={16} style={{ transform: expandSemesters ? 'rotate(180deg)' : 'rotate(0)' }} />
-            </div>
-            {expandSemesters && (
-              <div className="accordion-content">
-                {SEMESTERS.map(sem => (
-                  <label key={sem} className="filter-check-item">
-                    <input
-                      type="checkbox"
-                      checked={selectedSemesters.includes(sem)}
-                      onChange={() => toggleFilter(selectedSemesters, setSelectedSemesters, sem)}
-                    />
-                    <span>{sem}</span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-        </aside>
-
-        {/* Main Catalogue Results Area */}
-        <main className="catalogue-main">
-          {/* Header Controls Bar */}
-          <div className="catalogue-header-bar glass-card">
-            <div className="catalogue-count">
-              <h2>Question Papers</h2>
-              <span className="count-pill">{filteredPapers.length} Available</span>
-            </div>
-
-            <div className="catalogue-actions-right">
-              {/* Sort Selector */}
-              <div className="sort-dropdown-wrapper">
-                <ArrowUpDown size={14} />
-                <select
-                  className="form-select sort-select"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                >
-                  <option value="year-desc">Sort: Year (New to Old)</option>
-                  <option value="year-asc">Sort: Year (Old to New)</option>
-                  <option value="code-asc">Sort: Course Code</option>
-                </select>
-              </div>
-
-              {/* Batch Action Buttons */}
-              <button className="btn btn-secondary" onClick={handleSelectAll}>
+            {/* Batch Download Controls */}
+            <div className="deck-actions-right">
+              <button className="btn btn-cyber-outline btn-sm" onClick={handleSelectAll}>
                 Select All
               </button>
-              <button className="btn btn-secondary" onClick={handleDeselectAll}>
+              <button className="btn btn-cyber-outline btn-sm" onClick={handleDeselectAll}>
                 Deselect All
               </button>
-
               <button
-                className="btn btn-amber"
+                className="btn btn-cyber-amber btn-sm"
                 onClick={handleDownloadSelectedZip}
                 disabled={selectedPaperIds.length === 0 || isZipping}
               >
-                <Download size={16} />
+                <Download size={14} />
                 <span>{isZipping ? 'Zipping...' : `Download Selected (${selectedPaperIds.length})`}</span>
               </button>
             </div>
           </div>
 
-          {/* Paper Cards Grid */}
-          <div className="papers-grid">
+          {/* Expandable Filter Console */}
+          {showFilterDrawer && (
+            <div className="filter-console-body">
+              {/* Exam Category Pills */}
+              <div className="filter-row">
+                <span className="filter-row-title">Exam Type:</span>
+                <div className="filter-chips">
+                  {EXAM_TYPES.map(exam => (
+                    <button
+                      key={exam}
+                      className={`chip ${selectedExams.includes(exam) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(selectedExams, setSelectedExams, exam)}
+                    >
+                      {exam}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Slot Tags Matrix */}
+              <div className="filter-row">
+                <span className="filter-row-title">Slots:</span>
+                <div className="filter-chips">
+                  <span className="chip-category">Theory:</span>
+                  {AVAILABLE_SLOTS.theory.map(slot => (
+                    <button
+                      key={slot}
+                      className={`chip ${selectedSlots.includes(slot) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(selectedSlots, setSelectedSlots, slot)}
+                    >
+                      {slot}
+                    </button>
+                  ))}
+                  <span className="chip-category">Tutorial:</span>
+                  {AVAILABLE_SLOTS.tutorial.map(slot => (
+                    <button
+                      key={slot}
+                      className={`chip ${selectedSlots.includes(slot) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(selectedSlots, setSelectedSlots, slot)}
+                    >
+                      {slot}
+                    </button>
+                  ))}
+                  <span className="chip-category">Lab:</span>
+                  {AVAILABLE_SLOTS.lab.map(slot => (
+                    <button
+                      key={slot}
+                      className={`chip ${selectedSlots.includes(slot) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(selectedSlots, setSelectedSlots, slot)}
+                    >
+                      {slot}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Years & Semesters */}
+              <div className="filter-row">
+                <span className="filter-row-title">Academic Year:</span>
+                <div className="filter-chips">
+                  {ACADEMIC_YEARS.map(yr => (
+                    <button
+                      key={yr}
+                      className={`chip ${selectedYears.includes(yr) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(selectedYears, setSelectedYears, yr)}
+                    >
+                      {yr}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="filter-row">
+                <span className="filter-row-title">Semester:</span>
+                <div className="filter-chips">
+                  {SEMESTERS.map(sem => (
+                    <button
+                      key={sem}
+                      className={`chip ${selectedSemesters.includes(sem) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(selectedSemesters, setSelectedSemesters, sem)}
+                    >
+                      {sem}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Papers Results Grid */}
+        <div className="papers-matrix-wrapper">
+          <div className="matrix-results-bar">
+            <span>SHOWING {filteredPapers.length} QUESTION PAPERS</span>
+            <div className="sort-box">
+              <span>Sort:</span>
+              <select
+                className="cyber-select-mini"
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+              >
+                <option value="year-desc">Year (New to Old)</option>
+                <option value="year-asc">Year (Old to New)</option>
+                <option value="code-asc">Course Code</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="papers-matrix-grid">
             {filteredPapers.length === 0 ? (
-              <div className="empty-results glass-card">
-                <h3>No papers match your filters</h3>
-                <p>Try clearing your active filter options or search for a different course code.</p>
+              <div className="empty-matrix cyber-card">
+                <h3>No exam papers match your active filter options</h3>
+                <p>Try resetting filters or searching for a different course code.</p>
               </div>
             ) : (
               filteredPapers.map(paper => {
@@ -343,88 +300,90 @@ export default function Catalogue({
                 return (
                   <div
                     key={paper.id}
-                    className={`paper-card glass-card ${isSelected ? 'selected' : ''}`}
+                    className={`paper-matrix-card cyber-card ${isSelected ? 'selected' : ''}`}
                   >
-                    {/* Thumbnail View */}
-                    <div className="paper-card-thumb" onClick={() => onViewPaper(paper)}>
+                    {/* Corner Accent Node */}
+                    <div className="corner-node"></div>
+
+                    {/* Image Preview Thumbnail */}
+                    <div className="card-thumb-box" onClick={() => onViewPaper(paper)}>
                       <img src={paper.file_url} alt={paper.subject_name} loading="lazy" />
-                      <div className="thumb-overlay">
-                        <button className="btn btn-primary btn-sm">
-                          <Eye size={15} />
-                          <span>Quick View</span>
+                      <div className="thumb-hover-action">
+                        <button className="btn btn-cyber-red btn-sm">
+                          <Eye size={14} />
+                          <span>View Scan</span>
                         </button>
                       </div>
 
-                      {/* Checkbox Select Overlay */}
+                      {/* Select Checkbox Button */}
                       <button
-                        className={`paper-checkbox-btn ${isSelected ? 'checked' : ''}`}
+                        className={`select-check-btn ${isSelected ? 'checked' : ''}`}
                         onClick={(e) => {
                           e.stopPropagation();
                           togglePaperSelection(paper.id);
                         }}
                       >
-                        {isSelected ? <CheckSquare size={18} /> : <Square size={18} />}
+                        {isSelected ? <CheckSquare size={16} /> : <Square size={16} />}
                       </button>
 
                       {/* Pin Button */}
                       <button
-                        className={`paper-pin-btn ${isPinned ? 'active' : ''}`}
-                        title="Pin course to homepage"
+                        className={`pin-btn ${isPinned ? 'active' : ''}`}
                         onClick={(e) => {
                           e.stopPropagation();
                           onTogglePin(paper.course_code);
-                          onToast(isPinned ? `Unpinned ${paper.course_code}` : `Pinned ${paper.course_code} to homepage`);
+                          onToast(isPinned ? `Unpinned ${paper.course_code}` : `Pinned ${paper.course_code}`);
                         }}
                       >
-                        <Pin size={14} />
+                        <Pin size={13} />
                       </button>
                     </div>
 
-                    {/* Paper Info Content */}
-                    <div className="paper-card-body">
-                      <div className="paper-code-row">
-                        <span className="paper-code">{paper.course_code}</span>
+                    {/* Content Details */}
+                    <div className="card-body">
+                      <div className="card-top-info">
+                        <span className="course-code-badge">{paper.course_code}</span>
                         {paper.has_answer_key && (
-                          <span className="badge-answer-key" title="Verified Answer Key Included">
-                            <CheckCircle size={12} /> Key
+                          <span className="key-badge">
+                            <CheckCircle size={11} /> Answer Key
                           </span>
                         )}
                       </div>
 
-                      <h3 className="paper-title" onClick={() => onViewPaper(paper)}>
+                      <h3 className="subject-title" onClick={() => onViewPaper(paper)}>
                         {paper.subject_name}
                       </h3>
 
-                      {/* Metadata Badges */}
-                      <div className="paper-badges">
-                        <span className="badge badge-exam">{paper.exam_type}</span>
-                        <span className="badge badge-slot">Slot {paper.slot_tag}</span>
-                        <span className="badge badge-year">{paper.academic_year}</span>
-                        <span className="badge badge-semester">{paper.semester}</span>
+                      {/* Badges */}
+                      <div className="tag-badges-row">
+                        <span className="cyber-pill pill-exam">{paper.exam_type}</span>
+                        <span className="cyber-pill pill-slot">Slot {paper.slot_tag}</span>
+                        <span className="cyber-pill pill-year">{paper.academic_year}</span>
+                        <span className="cyber-pill pill-sem">{paper.semester}</span>
                       </div>
 
-                      {/* Action Bar */}
-                      <div className="paper-card-actions">
+                      {/* Card Footer Actions */}
+                      <div className="card-footer-actions">
                         <label
-                          className="select-label"
+                          className="select-toggle-label"
                           onClick={() => togglePaperSelection(paper.id)}
                         >
-                          {isSelected ? <CheckSquare size={16} /> : <Square size={16} />}
+                          {isSelected ? <CheckSquare size={15} /> : <Square size={15} />}
                           <span>{isSelected ? 'Selected' : 'Select'}</span>
                         </label>
 
                         <button
-                          className="btn-icon btn-sm"
-                          title="Direct Download"
+                          className="btn-icon-mini"
+                          title="Download PDF/Image"
                           onClick={() => {
                             const link = document.createElement('a');
                             link.href = paper.file_url;
                             link.download = `${paper.course_code}_${paper.exam_type}_${paper.slot_tag}.jpg`;
                             link.click();
-                            onToast(`Downloading ${paper.course_code} paper...`);
+                            onToast(`Downloading ${paper.course_code}...`);
                           }}
                         >
-                          <Download size={15} />
+                          <Download size={14} />
                         </button>
                       </div>
                     </div>
@@ -433,312 +392,300 @@ export default function Catalogue({
               })
             )}
           </div>
-        </main>
+        </div>
       </div>
 
       <style>{`
-        .catalogue-section {
-          padding: 1rem 1.5rem 3rem;
+        .hackclub-catalogue {
+          padding: 1rem 1.5rem 4rem;
         }
-        .catalogue-layout {
+        .catalogue-container {
           max-width: 1300px;
           margin: 0 auto;
-          display: grid;
-          grid-template-columns: 280px 1fr;
-          gap: 1.5rem;
         }
-        .filter-sidebar {
+        .catalogue-top-header {
+          margin-bottom: 1.25rem;
+        }
+        .catalogue-sub {
+          color: var(--text-muted);
+          font-size: 0.9rem;
+        }
+        .cyber-filter-deck {
           padding: 1.25rem;
-          height: fit-content;
-          position: sticky;
-          top: 80px;
+          margin-bottom: 2rem;
         }
-        .filter-sidebar-header {
+        .deck-bar-header {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          margin-bottom: 1rem;
+          gap: 1rem;
+          flex-wrap: wrap;
         }
-        .filter-title {
+        .cyber-toggle-label {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-        }
-        .filter-icon {
-          color: var(--highlight);
-        }
-        .reset-filters-btn {
-          background: none;
-          border: none;
-          color: var(--accent-bright);
-          font-size: 0.8rem;
-          font-weight: 600;
-          cursor: pointer;
-        }
-        .toggle-checkbox-label {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-          cursor: pointer;
           font-size: 0.85rem;
-          font-weight: 600;
-          color: var(--text);
-          padding: 0.5rem 0;
+          color: var(--text-cream);
+          cursor: pointer;
         }
-        .filter-accordion {
-          border-top: 1px solid var(--border);
-          padding-top: 0.75rem;
-          margin-top: 0.75rem;
-        }
-        .accordion-header {
+        .deck-actions-right {
+          margin-left: auto;
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          font-size: 0.9rem;
-          font-weight: 700;
-          cursor: pointer;
-          user-select: none;
-          color: var(--text-muted);
-          transition: color 0.2s ease;
+          gap: 0.5rem;
+          flex-wrap: wrap;
         }
-        .accordion-header:hover {
-          color: var(--text);
+        .btn-sm {
+          font-size: 0.78rem;
+          padding: 0.4rem 0.85rem;
         }
-        .accordion-content {
+        .filter-console-body {
+          margin-top: 1.25rem;
+          padding-top: 1.25rem;
+          border-top: 1px solid var(--border-dark);
           display: flex;
           flex-direction: column;
-          gap: 0.4rem;
-          padding-top: 0.6rem;
+          gap: 0.85rem;
         }
-        .filter-check-item {
+        .filter-row {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
-          font-size: 0.85rem;
-          color: var(--text);
-          cursor: pointer;
-        }
-        .slot-section-title {
-          font-size: 0.72rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          color: var(--text-subtle);
-        }
-        .slot-pill-grid {
-          display: flex;
+          gap: 1rem;
           flex-wrap: wrap;
-          gap: 0.35rem;
         }
-        .slot-pill {
-          padding: 0.2rem 0.5rem;
-          border-radius: 6px;
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: var(--text-muted);
-          font-size: 0.75rem;
+        .filter-row-title {
+          font-family: var(--font-mono);
+          font-size: 0.78rem;
+          font-weight: 700;
+          color: var(--crimson-main);
+          min-width: 110px;
+        }
+        .filter-chips {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.4rem;
+        }
+        .chip-category {
+          font-size: 0.72rem;
+          color: var(--text-subtle);
+          margin-right: 0.2rem;
           font-weight: 600;
+        }
+        .chip {
+          padding: 0.25rem 0.65rem;
+          border-radius: 4px;
+          background: rgba(0, 0, 0, 0.5);
+          border: 1px solid var(--border-dark);
+          color: var(--text-muted);
+          font-size: 0.78rem;
+          font-family: var(--font-mono);
           cursor: pointer;
           transition: all 0.2s ease;
         }
-        .slot-pill:hover, .slot-pill.active {
-          background: var(--highlight);
-          color: #020000;
-          border-color: var(--highlight);
+        .chip:hover, .chip.active {
+          border-color: var(--crimson-main);
+          background: var(--crimson-main);
+          color: #ffffff;
         }
-        .catalogue-main {
-          display: flex;
-          flex-direction: column;
-          gap: 1.25rem;
-        }
-        .catalogue-header-bar {
-          padding: 1rem 1.25rem;
+        .matrix-results-bar {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          flex-wrap: wrap;
-          gap: 1rem;
-        }
-        .catalogue-count {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-        }
-        .catalogue-count h2 {
-          font-size: 1.3rem;
-        }
-        .count-pill {
-          padding: 0.2rem 0.6rem;
-          background: rgba(172, 18, 12, 0.2);
-          border: 1px solid rgba(172, 18, 12, 0.4);
-          color: #ff6b6b;
-          border-radius: 999px;
+          font-family: var(--font-mono);
           font-size: 0.78rem;
-          font-weight: 700;
+          color: var(--text-muted);
+          margin-bottom: 1rem;
         }
-        .catalogue-actions-right {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-          flex-wrap: wrap;
+        .cyber-select-mini {
+          background: rgba(0, 0, 0, 0.5);
+          border: 1px solid var(--border-dark);
+          color: var(--text-cream);
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          font-family: var(--font-mono);
+          font-size: 0.78rem;
+          margin-left: 0.4rem;
         }
-        .sort-dropdown-wrapper {
-          display: flex;
-          align-items: center;
-          gap: 0.4rem;
-          background: rgba(0, 0, 0, 0.4);
-          border: 1px solid var(--border);
-          border-radius: 999px;
-          padding: 0.2rem 0.8rem;
-        }
-        .sort-select {
-          border: none;
-          background: transparent;
-          padding: 0.35rem 0.2rem;
-          font-size: 0.85rem;
-        }
-        .papers-grid {
+        .papers-matrix-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-          gap: 1.25rem;
+          grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+          gap: 1.5rem;
         }
-        .empty-results {
+        .empty-matrix {
           grid-column: 1 / -1;
           padding: 3rem;
           text-align: center;
           color: var(--text-muted);
         }
-        .paper-card {
-          border-radius: 16px;
+        .paper-matrix-card {
+          border-radius: 12px;
           overflow: hidden;
           display: flex;
           flex-direction: column;
         }
-        .paper-card.selected {
-          border-color: var(--highlight);
-          box-shadow: 0 0 25px rgba(208, 125, 34, 0.3);
+        .paper-matrix-card.selected {
+          border-color: var(--amber-accent);
+          box-shadow: 0 0 25px rgba(224, 139, 38, 0.3);
         }
-        .paper-card-thumb {
+        .corner-node {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          width: 6px;
+          height: 6px;
+          background: var(--crimson-main);
+          border-radius: 50%;
+          box-shadow: 0 0 8px var(--crimson-main);
+        }
+        .card-thumb-box {
           position: relative;
           height: 180px;
-          background: #0b0202;
+          background: #060101;
           overflow: hidden;
           cursor: pointer;
         }
-        .paper-card-thumb img {
+        .card-thumb-box img {
           width: 100%;
           height: 100%;
           object-fit: cover;
           transition: transform 0.3s ease;
         }
-        .paper-card:hover .paper-card-thumb img {
+        .paper-matrix-card:hover .card-thumb-box img {
           transform: scale(1.05);
         }
-        .thumb-overlay {
+        .thumb-hover-action {
           position: absolute;
           inset: 0;
-          background: rgba(2, 0, 0, 0.65);
+          background: rgba(0, 0, 0, 0.75);
           display: flex;
           align-items: center;
           justify-content: center;
           opacity: 0;
           transition: opacity 0.2s ease;
         }
-        .paper-card-thumb:hover .thumb-overlay {
+        .card-thumb-box:hover .thumb-hover-action {
           opacity: 1;
         }
-        .paper-checkbox-btn {
+        .select-check-btn {
           position: absolute;
           top: 0.6rem;
           left: 0.6rem;
-          background: rgba(0, 0, 0, 0.7);
+          background: rgba(0, 0, 0, 0.75);
           border: none;
           color: var(--text-muted);
           cursor: pointer;
           padding: 0.2rem;
-          border-radius: 6px;
+          border-radius: 4px;
         }
-        .paper-checkbox-btn.checked {
-          color: var(--highlight);
+        .select-check-btn.checked {
+          color: var(--amber-accent);
         }
-        .paper-pin-btn {
+        .pin-btn {
           position: absolute;
           top: 0.6rem;
-          right: 0.6rem;
-          background: rgba(0, 0, 0, 0.7);
+          right: 1.8rem;
+          background: rgba(0, 0, 0, 0.75);
           border: none;
           color: var(--text-muted);
           cursor: pointer;
-          padding: 0.3rem;
+          padding: 0.25rem;
           border-radius: 50%;
         }
-        .paper-pin-btn.active {
-          color: var(--highlight);
+        .pin-btn.active {
+          color: var(--crimson-bright);
         }
-        .paper-card-body {
+        .card-body {
           padding: 1rem;
           display: flex;
           flex-direction: column;
           gap: 0.5rem;
           flex: 1;
         }
-        .paper-code-row {
+        .card-top-info {
           display: flex;
           align-items: center;
           justify-content: space-between;
         }
-        .paper-code {
+        .course-code-badge {
           font-family: var(--font-mono);
-          font-size: 0.8rem;
+          font-size: 0.78rem;
           font-weight: 700;
-          color: var(--highlight);
+          color: var(--amber-accent);
         }
-        .badge-answer-key {
+        .key-badge {
           display: flex;
           align-items: center;
           gap: 0.2rem;
           font-size: 0.72rem;
-          font-weight: 700;
           color: #4ade80;
+          font-family: var(--font-mono);
         }
-        .paper-title {
+        .subject-title {
           font-size: 1rem;
           font-weight: 700;
-          line-height: 1.3;
           cursor: pointer;
         }
-        .paper-title:hover {
-          color: var(--accent-bright);
+        .subject-title:hover {
+          color: var(--crimson-bright);
         }
-        .paper-badges {
+        .tag-badges-row {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.35rem;
-          margin-top: 0.2rem;
+          gap: 0.3rem;
         }
-        .paper-card-actions {
+        .cyber-pill {
+          padding: 0.15rem 0.5rem;
+          border-radius: 4px;
+          font-family: var(--font-mono);
+          font-size: 0.72rem;
+          font-weight: 700;
+        }
+        .pill-exam {
+          background: rgba(211, 7, 14, 0.2);
+          color: #ff6b6b;
+          border: 1px solid rgba(211, 7, 14, 0.4);
+        }
+        .pill-slot {
+          background: rgba(224, 139, 38, 0.2);
+          color: #ffb86c;
+          border: 1px solid rgba(224, 139, 38, 0.4);
+        }
+        .pill-year {
+          background: rgba(255, 255, 255, 0.08);
+          color: var(--text-muted);
+        }
+        .pill-sem {
+          background: rgba(91, 97, 214, 0.2);
+          color: #a5b4fc;
+        }
+        .card-footer-actions {
           margin-top: auto;
           padding-top: 0.6rem;
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          border-top: 1px solid var(--border-dark);
           display: flex;
           align-items: center;
           justify-content: space-between;
         }
-        .select-label {
+        .select-toggle-label {
           display: flex;
           align-items: center;
           gap: 0.35rem;
-          font-size: 0.8rem;
+          font-size: 0.78rem;
           color: var(--text-muted);
           cursor: pointer;
         }
-        @media (max-width: 900px) {
-          .catalogue-layout {
-            grid-template-columns: 1fr;
-          }
-          .filter-sidebar {
-            position: relative;
-            top: 0;
-          }
+        .btn-icon-mini {
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid var(--border-dark);
+          color: var(--text-cream);
+          padding: 0.3rem;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        .btn-icon-mini:hover {
+          background: var(--crimson-main);
+          color: #fff;
         }
       `}</style>
     </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Upload, Sun, Moon, Bookmark, ShieldCheck } from 'lucide-react';
+import { Search, Upload, Sun, Moon, Terminal, Shield } from 'lucide-react';
 
 export default function Header({
   searchQuery,
@@ -12,133 +12,174 @@ export default function Header({
   setActiveView
 }) {
   return (
-    <header className="header-bar glass-card" style={{ borderRadius: 0, borderTop: 0, borderLeft: 0, borderRight: 0 }}>
+    <header className="hackclub-header">
       <div className="header-inner">
-        {/* Brand Title */}
-        <div className="brand-group" onClick={() => setActiveView('public')} style={{ cursor: 'pointer' }}>
-          <div className="brand-logo-icon">
-            <span className="logo-spark">⚡</span>
+        {/* Left Brand Logo */}
+        <div className="brand-logo" onClick={() => setActiveView('public')}>
+          <span className="diamond-node">♦</span>
+          <span className="brand-name-white">PAPERS</span>
+          <span className="brand-name-red">VITC</span>
+          <span className="slash-tag">/&gt;</span>
+        </div>
+
+        {/* Center System Status Marquee Pill */}
+        <div className="system-status-pill">
+          <span className="pulse-dot">●</span>
+          <span className="status-text">SYSTEM ONLINE — 2025-26 ACADEMIC ARCHIVE</span>
+        </div>
+
+        {/* Header Search & Actions */}
+        <div className="header-right">
+          {/* Quick Search */}
+          <div className="header-search-box">
+            <Search size={15} className="search-icon" />
+            <input
+              type="text"
+              className="cyber-input search-input"
+              placeholder="Search code / subject..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button className="clear-btn" onClick={() => setSearchQuery('')}>×</button>
+            )}
           </div>
-          <h1 className="brand-title gradient-text">papersvitc</h1>
-        </div>
 
-        {/* Global Search Bar */}
-        <div className="header-search">
-          <Search size={18} className="search-icon" />
-          <input
-            type="text"
-            className="header-search-input"
-            placeholder="Search by course code or subject..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          {searchQuery && (
-            <button className="clear-search-btn" onClick={() => setSearchQuery('')}>×</button>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div className="header-actions">
-          {/* Theme Toggle */}
+          {/* Theme Switch */}
           <button
-            className="btn-icon"
+            className="theme-btn"
             title="Toggle Light / Dark Mode"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
-          {/* Upload Paper CTA Button */}
-          <button className="btn btn-primary" onClick={onOpenUpload}>
-            <Upload size={16} />
-            <span>Upload Paper</span>
+          {/* Upload CTA */}
+          <button className="btn btn-cyber-red" onClick={onOpenUpload}>
+            <span>→ UPLOAD PAPER</span>
           </button>
         </div>
       </div>
 
       <style>{`
-        .header-bar {
+        .hackclub-header {
           position: sticky;
           top: 0;
           z-index: 100;
-          padding: 0.75rem 1.5rem;
-          background: rgba(18, 2, 2, 0.85);
-          backdrop-filter: blur(16px);
+          background: rgba(0, 0, 0, 0.9);
+          backdrop-filter: blur(14px);
+          border-bottom: 1px solid var(--border-dark);
+          padding: 0.8rem 1.5rem;
         }
         .header-inner {
-          max-width: 1300px;
+          max-width: 1350px;
           margin: 0 auto;
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: 1rem;
         }
-        .brand-group {
+        .brand-logo {
           display: flex;
           align-items: center;
-          gap: 0.6rem;
+          gap: 0.3rem;
+          cursor: pointer;
+          font-family: var(--font-display);
+          font-size: 1.4rem;
+          font-weight: 900;
+          letter-spacing: -0.02em;
         }
-        .brand-logo-icon {
-          width: 36px;
-          height: 36px;
-          border-radius: 10px;
-          background: linear-gradient(135deg, var(--primary), var(--accent));
+        .diamond-node {
+          color: var(--crimson-main);
+          font-size: 1rem;
+          margin-right: 0.2rem;
+        }
+        .brand-name-white {
+          color: var(--text-white);
+        }
+        .brand-name-red {
+          color: var(--crimson-main);
+        }
+        .slash-tag {
+          font-family: var(--font-mono);
+          font-size: 0.9rem;
+          color: var(--text-muted);
+          margin-left: 0.2rem;
+        }
+        .system-status-pill {
           display: flex;
           align-items: center;
-          justify-content: center;
-          font-weight: 800;
-          box-shadow: 0 4px 12px rgba(172, 18, 12, 0.4);
+          gap: 0.5rem;
+          padding: 0.35rem 0.9rem;
+          background: rgba(14, 2, 2, 0.8);
+          border: 1px solid var(--border-dark);
+          border-radius: 999px;
+          font-family: var(--font-mono);
+          font-size: 0.72rem;
+          letter-spacing: 0.08em;
+          color: var(--text-muted);
         }
-        .brand-title {
-          font-size: 1.5rem;
-          font-weight: 800;
-          letter-spacing: -0.03em;
+        .pulse-dot {
+          color: #22c55e;
+          font-size: 0.7rem;
+          animation: pulse 2s infinite;
         }
-        .header-search {
+        @keyframes pulse {
+          0% { opacity: 0.4; }
+          50% { opacity: 1; }
+          100% { opacity: 0.4; }
+        }
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+        .header-search-box {
           position: relative;
-          flex: 1;
-          max-width: 460px;
+          width: 220px;
         }
         .search-icon {
           position: absolute;
-          left: 1rem;
+          left: 0.75rem;
           top: 50%;
           transform: translateY(-50%);
           color: var(--text-muted);
         }
-        .header-search-input {
-          width: 100%;
-          padding: 0.6rem 2.2rem 0.6rem 2.6rem;
-          background: rgba(0, 0, 0, 0.45);
-          border: 1px solid var(--border);
+        .search-input {
+          padding-left: 2.2rem;
+          font-size: 0.85rem;
           border-radius: 999px;
-          color: var(--text);
-          font-size: 0.9rem;
-          outline: none;
-          transition: all 0.2s ease;
+          padding-top: 0.45rem;
+          padding-bottom: 0.45rem;
         }
-        .header-search-input:focus {
-          border-color: var(--highlight);
-          box-shadow: 0 0 0 3px rgba(208, 125, 34, 0.25);
-        }
-        .clear-search-btn {
+        .clear-btn {
           position: absolute;
-          right: 0.8rem;
+          right: 0.75rem;
           top: 50%;
           transform: translateY(-50%);
           background: none;
           border: none;
           color: var(--text-muted);
-          font-size: 1.2rem;
           cursor: pointer;
         }
-        .header-actions {
+        .theme-btn {
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid var(--border-dark);
+          color: var(--text-cream);
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
           display: flex;
           align-items: center;
-          gap: 0.75rem;
+          justify-content: center;
+          cursor: pointer;
         }
-        @media (max-width: 768px) {
-          .header-search {
+        .theme-btn:hover {
+          border-color: var(--crimson-main);
+          color: var(--crimson-bright);
+        }
+        @media (max-width: 900px) {
+          .system-status-pill, .header-search-box {
             display: none;
           }
         }
