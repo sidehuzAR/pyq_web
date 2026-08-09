@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Light Theme (Cream Base) */
+    --bg-canvas: #F4F0E6;
+    --bg-surface: #FFFFFF;
+    --bg-elevated: #F9F7F1;
+    --text-ink: #111111;
+    --text-muted: #666666;
+    --border-base: #111111;
+    --accent-red: #D92D20;
+    --accent-blue: #155A8A;
+    --accent-yellow: #F2C230;
+  }
+
+  .dark {
+    /* Dark Theme (Dark Grey/Brown Base - using stone palette) */
+    --bg-canvas: #1C1917; /* stone-900 */
+    --bg-surface: #292524; /* stone-800 */
+    --bg-elevated: #44403C; /* stone-700 */
+    --text-ink: #F5F5F4; /* stone-100 */
+    --text-muted: #A8A29E; /* stone-400 */
+    --border-base: #57534E; /* stone-600 */
+    --accent-red: #D92D20;
+    --accent-blue: #00D4FF; /* Vibrant cyan for dark mode pop */
+    --accent-yellow: #E8A838;
+  }
+}
+
+@theme {
+  --color-bauhaus-canvas: var(--bg-canvas);
+  --color-bauhaus-surface: var(--bg-surface);
+  --color-bauhaus-elevated: var(--bg-elevated);
+  --color-bauhaus-ink: var(--text-ink);
+  --color-bauhaus-muted: var(--text-muted);
+  --color-bauhaus-border: var(--border-base);
+  --color-bauhaus-red: var(--accent-red);
+  --color-bauhaus-blue: var(--accent-blue);
+  --color-bauhaus-yellow: var(--accent-yellow);
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Montserrat', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius-default: 0px;
+  --radius-none: 0px;
+
+  --shadow-bauhaus: 4px 4px 0px var(--border-base);
+  --shadow-bauhaus-lg: 6px 6px 0px var(--border-base);
+  --shadow-bauhaus-red: 4px 4px 0px var(--accent-red);
+  --shadow-bauhaus-yellow: 4px 4px 0px var(--accent-yellow);
+  --shadow-bauhaus-blue: 4px 4px 0px var(--accent-blue);
+}
+
+@layer utilities {
+  .sharp {
+    border-radius: 0 !important;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
