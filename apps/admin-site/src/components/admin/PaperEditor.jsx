@@ -89,7 +89,7 @@ export default function PaperEditor({ papers = [], courses = [], onEdit, onDelet
                     <div>
                       <label className="text-[10px] font-mono font-bold text-bauhaus-muted uppercase mb-1 block">Semester</label>
                       <select value={editForm.semester} onChange={e => setEditForm(f => ({ ...f, semester: e.target.value }))} className={selectClass}>
-                        {['SEM1', 'SEM2'].map(s => <option key={s}>{s}</option>)}
+                        {['Fall Sem', 'Win Sem', 'Others'].map(s => <option key={s}>{s}</option>)}
                       </select>
                     </div>
                     <div>

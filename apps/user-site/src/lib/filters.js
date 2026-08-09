@@ -28,9 +28,16 @@ export function filterPapers(papers, { searchQuery = '', selectedExams = [], sel
       if (!matches) return false;
     }
 
-    // Slot Tag filter (OR within group)
-    if (selectedSlots.length > 0 && !selectedSlots.includes(paper.slot_tag)) {
-      return false;
+    // Slot Tag filter (OR within group, component matching for combined slots like B1+TB1)
+    if (selectedSlots.length > 0) {
+      const paperSlotComponents = String(paper.slot_tag || '').toUpperCase().split(/[\s+\/,]+/);
+      const matches = selectedSlots.some(selected => {
+        const selUpper = String(selected || '').trim().toUpperCase();
+        return paperSlotComponents.includes(selUpper) ||
+               String(paper.slot_tag || '').toUpperCase().includes(selUpper) ||
+               selUpper.includes(String(paper.slot_tag || '').toUpperCase());
+      });
+      if (!matches) return false;
     }
 
     // Academic Year filter (OR within group)
@@ -38,13 +45,31 @@ export function filterPapers(papers, { searchQuery = '', selectedExams = [], sel
       return false;
     }
 
-    // Semester filter (OR within group)
-    if (selectedSemesters.length > 0 && !selectedSemesters.includes(paper.semester)) {
-      return false;
+    // Semester filter (OR within group, normalized matching: Odd = Fall Sem, Even = Win Sem)
+    if (selectedSemesters.length > 0) {
+      const paperSemNorm = normalizeSemesterName(paper.semester);
+      const matches = selectedSemesters.some(s => normalizeSemesterName(s) === paperSemNorm);
+      if (!matches) return false;
     }
 
     return true;
   });
+}
+
+export function normalizeSemesterName(semStr) {
+  if (!semStr) return 'Fall Sem';
+  const str = String(semStr).trim().toLowerCase();
+
+  // Odd semester numbers or Fall -> Fall Sem
+  if (/\b(1|3|5|7|9|odd)\b/.test(str) || str.includes('fall')) {
+    return 'Fall Sem';
+  }
+  // Even semester numbers, Winter, or Win -> Win Sem
+  if (/\b(2|4|6|8|even|win|winter)\b/.test(str) || str.includes('win') || str.includes('winter')) {
+    return 'Win Sem';
+  }
+
+  return semStr;
 }
 
 export function sortPapers(papers, sortBy = 'year-desc') {

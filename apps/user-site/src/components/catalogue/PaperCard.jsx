@@ -3,6 +3,7 @@ import { Eye, Download, CheckSquare, Square, CheckCircle } from 'lucide-react';
 import Badge from '../shared/Badge.jsx';
 import Button from '../shared/Button.jsx';
 import PdfThumbnail from './PdfThumbnail.jsx';
+import { normalizeSemesterName } from '../../lib/filters.js';
 
 export default function PaperCard({
   paper,
@@ -82,8 +83,8 @@ export default function PaperCard({
         {/* Badges Matrix */}
         <div className="flex flex-wrap gap-1.5 mb-4">
           <Badge variant="red">{paper.exam_type}</Badge>
-          <Badge variant="blue">SLOT {paper.slot_tag}</Badge>
-          <Badge variant="outline">{paper.semester}</Badge>
+          <Badge variant="blue">{paper.slot_tag}</Badge>
+          <Badge variant="outline">{normalizeSemesterName(paper.semester)}</Badge>
           {paper.has_answer_key && (
             <Badge variant="yellow">
               <CheckCircle size={11} className="inline mr-1" />

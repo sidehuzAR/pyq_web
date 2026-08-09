@@ -46,7 +46,7 @@ export const INITIAL_PAPERS = [
     exam_type: 'FAT',
     slot_tag: 'A1',
     academic_year: '2024-25',
-    semester: 'Winter Sem',
+    semester: 'Win Sem',
     has_answer_key: true,
     status: 'approved',
     created_at: '2025-05-10T11:00:00Z',

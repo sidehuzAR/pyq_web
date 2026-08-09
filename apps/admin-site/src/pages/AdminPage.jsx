@@ -179,7 +179,7 @@ export default function AdminPage({
 // Inline mini form for admin-direct paper add
 function AdminAddPaperForm({ courses, onSubmit, onToast }) {
   const [form, setForm] = useState({
-    course_code: '', subject_name: '', exam_type: 'CAT1', slot_tag: 'A', semester: 'SEM1', academic_year: '2024-25', has_answer_key: false
+    course_code: '', subject_name: '', exam_type: 'CAT-1', slot_tag: 'A1', semester: 'Fall Sem', academic_year: '2025-26', has_answer_key: false
   });
   const [file, setFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -192,7 +192,7 @@ function AdminAddPaperForm({ courses, onSubmit, onToast }) {
     setSubmitting(true);
     await onSubmit({ file, metadata: form });
     setSubmitting(false);
-    setForm({ course_code: '', subject_name: '', exam_type: 'CAT1', slot_tag: 'A', semester: 'SEM1', academic_year: '2024-25', has_answer_key: false });
+    setForm({ course_code: '', subject_name: '', exam_type: 'CAT-1', slot_tag: 'A1', semester: 'Fall Sem', academic_year: '2025-26', has_answer_key: false });
     setFile(null);
   };
 
@@ -217,7 +217,7 @@ function AdminAddPaperForm({ courses, onSubmit, onToast }) {
       <div>
         <label className={label}>Exam Type</label>
         <select value={form.exam_type} onChange={e => set('exam_type', e.target.value)} className={selectClass}>
-          {['CAT1', 'CAT2', 'FAT', 'MODEL'].map(t => <option key={t}>{t}</option>)}
+          {['CAT-1', 'CAT-2', 'FAT'].map(t => <option key={t}>{t}</option>)}
         </select>
       </div>
 
@@ -229,7 +229,7 @@ function AdminAddPaperForm({ courses, onSubmit, onToast }) {
       <div>
         <label className={label}>Semester</label>
         <select value={form.semester} onChange={e => set('semester', e.target.value)} className={selectClass}>
-          {['SEM1', 'SEM2'].map(s => <option key={s}>{s}</option>)}
+          {['Fall Sem', 'Win Sem', 'Others'].map(s => <option key={s}>{s}</option>)}
         </select>
       </div>
 

@@ -10,7 +10,7 @@ export const SLOT_TAGS = {
 
 export const ACADEMIC_YEARS = ['2025-26', '2024-25', '2023-24', '2022-23'];
 
-export const SEMESTERS = ['Fall Sem', 'Winter Sem', 'Others'];
+export const SEMESTERS = ['Fall Sem', 'Win Sem', 'Others'];
 
 export const STATUS = {
   PENDING: 'pending',

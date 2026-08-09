@@ -2,6 +2,7 @@ import React from 'react';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
 import Badge from '../shared/Badge.jsx';
 import Button from '../shared/Button.jsx';
+import { normalizeSemesterName } from '../../lib/filters.js';
 
 export default function MetadataBar({ paper, onOpenReport }) {
   if (!paper) return null;
@@ -21,9 +22,9 @@ export default function MetadataBar({ paper, onOpenReport }) {
 
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="red">{paper.exam_type}</Badge>
-          <Badge variant="blue">SLOT {paper.slot_tag}</Badge>
+          <Badge variant="blue">{paper.slot_tag}</Badge>
           <Badge variant="yellow">{paper.academic_year}</Badge>
-          <Badge variant="outline">{paper.semester}</Badge>
+          <Badge variant="outline">{normalizeSemesterName(paper.semester)}</Badge>
           {paper.has_answer_key && (
             <Badge variant="dark">
               <CheckCircle size={12} className="inline mr-1 text-bauhaus-yellow" />
