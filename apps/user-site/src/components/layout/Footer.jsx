@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { CheckCircle2, Heart, Code2 } from 'lucide-react';
 
 export default function Footer() {
@@ -66,20 +65,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Right Column: Navigation Links */}
-          <div className="flex items-center gap-4 text-xs font-mono font-black uppercase tracking-widest text-bauhaus-muted">
-            <Link to="/" className="hover:text-bauhaus-yellow transition-colors">
-              HOME
-            </Link>
-            <span className="text-bauhaus-border">/</span>
-            <Link to="/catalogue" className="hover:text-bauhaus-yellow transition-colors">
-              CATALOGUE
-            </Link>
-            <span className="text-bauhaus-border">/</span>
-            <Link to="/upload" className="hover:text-bauhaus-yellow transition-colors">
-              UPLOAD
-            </Link>
-          </div>
 
         </div>
 
