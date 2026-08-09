@@ -2,6 +2,7 @@ import React from 'react';
 import { Eye, Download, CheckSquare, Square, CheckCircle } from 'lucide-react';
 import Badge from '../shared/Badge.jsx';
 import Button from '../shared/Button.jsx';
+import PdfThumbnail from './PdfThumbnail.jsx';
 
 export default function PaperCard({
   paper,
@@ -61,10 +62,7 @@ export default function PaperCard({
           className="relative h-36 bg-bauhaus-canvas mb-3 border border-bauhaus-border overflow-hidden cursor-pointer group transition-colors duration-200"
         >
         {paper.file_url?.toLowerCase().includes('.pdf') ? (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-bauhaus-elevated text-bauhaus-muted group-hover:text-bauhaus-red transition-colors duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <span className="font-mono text-[10px] font-bold uppercase tracking-widest">PDF DOCUMENT</span>
-          </div>
+          <PdfThumbnail fileUrl={paper.file_url} />
         ) : (
           <img
             src={paper.file_url}
