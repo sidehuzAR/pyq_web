@@ -18,7 +18,23 @@ export default function UploadPage({ courses = [], onToast }) {
     setSubmitting(false);
 
     if (error) {
-      onToast('Failed to upload paper: ' + error.message, 'error');
+      console.error('Upload error:', error);
+      let errMsg = error.message || 'An unexpected error occurred.';
+      
+      // Clean up raw database errors for the frontend
+      if (errMsg.includes('foreign key constraint') || errMsg.includes('violates foreign key')) {
+        if (errMsg.includes('course_code')) {
+           errMsg = 'Invalid course code. If entering manually, the "OTHERS" fallback course might be missing in the database. Please contact an admin.';
+        } else {
+           errMsg = 'Invalid reference data provided. Please check your inputs.';
+        }
+      } else if (errMsg.includes('duplicate key')) {
+        errMsg = 'This paper scan has already been uploaded.';
+      } else if (errMsg.includes('row-level security') || errMsg.includes('RLS')) {
+        errMsg = 'You do not have permission to perform this upload.';
+      }
+      
+      onToast('Upload failed: ' + errMsg, 'error');
     } else {
       onToast('Paper scan submitted for admin moderation!', 'success');
     }
