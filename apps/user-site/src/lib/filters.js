@@ -20,9 +20,12 @@ export function filterPapers(papers, { searchQuery = '', selectedExams = [], sel
       return false;
     }
 
-    // Exam Type filter (OR within group)
-    if (selectedExams.length > 0 && !selectedExams.includes(paper.exam_type)) {
-      return false;
+    // Exam Type filter (OR within group, normalized matching)
+    if (selectedExams.length > 0) {
+      const normalize = s => String(s || '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+      const paperExamNorm = normalize(paper.exam_type);
+      const matches = selectedExams.some(e => normalize(e) === paperExamNorm);
+      if (!matches) return false;
     }
 
     // Slot Tag filter (OR within group)

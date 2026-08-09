@@ -26,18 +26,28 @@ export default function FilterBar({
     }
   };
 
-  const examsToRender = availableOptions?.exams || EXAM_TYPES;
-  const yearsToRender = availableOptions?.years || ACADEMIC_YEARS;
-  const semsToRender = availableOptions?.semesters || SEMESTERS;
+  const examsToRender = (availableOptions?.exams && availableOptions.exams.length > 0)
+    ? availableOptions.exams
+    : EXAM_TYPES;
 
-  // Slots to render
-  const theorySlots = availableOptions?.slots
+  const yearsToRender = (availableOptions?.years && availableOptions.years.length > 0)
+    ? availableOptions.years
+    : ACADEMIC_YEARS;
+
+  const semsToRender = (availableOptions?.semesters && availableOptions.semesters.length > 0)
+    ? availableOptions.semesters
+    : SEMESTERS;
+
+  // Slots to render — fallback to full SLOT_TAGS if availableOptions slots list is empty
+  const theorySlots = (availableOptions?.slots && availableOptions.slots.length > 0)
     ? SLOT_TAGS.theory.filter(s => availableOptions.slots.includes(s))
     : SLOT_TAGS.theory;
-  const tutorialSlots = availableOptions?.slots
+
+  const tutorialSlots = (availableOptions?.slots && availableOptions.slots.length > 0)
     ? SLOT_TAGS.tutorial.filter(s => availableOptions.slots.includes(s))
     : SLOT_TAGS.tutorial;
-  const labSlots = availableOptions?.slots
+
+  const labSlots = (availableOptions?.slots && availableOptions.slots.length > 0)
     ? SLOT_TAGS.lab.filter(s => availableOptions.slots.includes(s))
     : SLOT_TAGS.lab;
 
