@@ -47,7 +47,7 @@ export default function HomePage({
             </h1>
 
             <p className="text-base sm:text-lg font-medium text-bauhaus-muted max-w-xl leading-relaxed">
-              Instant zero-login access to Previous Year Question (PYQ) papers across all engineering timetable slots, exam categories, and academic terms.
+              Previous year question papers for VIT students. Zero login required.
             </p>
 
             {/* Dominant Hero Search Action */}

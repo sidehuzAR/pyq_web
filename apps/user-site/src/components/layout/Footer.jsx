@@ -30,7 +30,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-xs font-mono text-stone-400 font-medium leading-relaxed">
-              VIT Exam Repository — Zero-login past paper access for engineering students.
+              VIT PYQ Archive.
             </p>
           </div>
 
@@ -87,12 +87,10 @@ export default function Footer() {
         <div className="mt-8 pt-4 border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between text-[10px] font-mono font-bold text-stone-400 uppercase gap-2">
           <div className="flex items-center gap-1.5">
             <CheckCircle2 size={13} className="text-[#00D4FF]" />
-            <span>COMMUNITY MAINTAINED • FORM FOLLOWS FUNCTION</span>
+            <span>COMMUNITY MAINTAINED</span>
           </div>
           <div className="flex items-center gap-1">
-            <span>CRAFTED WITH</span>
-            <Heart size={11} className="text-[#D92D20] fill-[#D92D20]" />
-            <span>FOR VIT STUDENTS</span>
+            <span>BUY US <span className="line-through text-stone-500">COFFEE</span>, SHAWARMA</span>
           </div>
         </div>
       </div>
