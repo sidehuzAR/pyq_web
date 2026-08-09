@@ -20,10 +20,10 @@ export default function Footer() {
           <div className="space-y-2 text-center lg:text-left max-w-sm">
             <div className="flex items-center justify-center lg:justify-start gap-2">
               {/* Geometric Bauhaus Icon Mark */}
-              <div className="flex items-center gap-1">
-                <div className="w-3.5 h-3.5 bg-[#D92D20] sharp" />
-                <div className="w-3.5 h-3.5 bg-[#00D4FF] rounded-full" />
-                <polygon points="0,14 7,0 14,14" className="w-3.5 h-3.5 fill-[#E8A838]" />
+              <div className="flex items-center gap-1 border border-stone-850 p-1 bg-stone-900 sharp shadow-md">
+                <div className="w-3 h-3 bg-[#D92D20] sharp" />
+                <div className="w-3 h-3 rounded-full bg-[#00D4FF]" />
+                <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[10.5px] border-b-[#E8A838]" />
               </div>
               <span className="font-display text-2xl font-black tracking-wider uppercase text-white">
                 PYARCHIVE
