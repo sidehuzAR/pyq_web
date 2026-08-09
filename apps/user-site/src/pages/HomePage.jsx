@@ -46,8 +46,11 @@ export default function HomePage({
               <span className="text-bauhaus-red">ARCHIVE</span> FOR VIT CHENNAI
             </h1>
 
-            <p className="text-base sm:text-lg font-medium text-bauhaus-muted max-w-xl leading-relaxed">
-              Previous year question papers for VIT Chennai students. Zero login required.
+            <p className="text-base sm:text-lg font-medium text-bauhaus-muted max-w-xl leading-relaxed flex flex-wrap items-center gap-y-2">
+              <span>Previous year question papers for VIT Chennai students. Zero login required.</span>
+              <span className="bg-bauhaus-yellow text-bauhaus-canvas px-2 py-0.5 text-xs font-mono font-black uppercase tracking-wider sharp border border-bauhaus-border shadow-bauhaus-sm inline-block">
+                [FOR ACE CURRICULUM]
+              </span>
             </p>
 
             {/* Dominant Hero Search Action */}
