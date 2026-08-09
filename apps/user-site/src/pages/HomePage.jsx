@@ -43,11 +43,11 @@ export default function HomePage({
 
             <h1 className="font-display text-4xl sm:text-6xl font-black text-bauhaus-ink leading-none uppercase tracking-tight">
               EXAM PAPERS <br />
-              <span className="text-bauhaus-red">ARCHIVE</span> FOR VIT
+              <span className="text-bauhaus-red">ARCHIVE</span> FOR VIT CHENNAI
             </h1>
 
             <p className="text-base sm:text-lg font-medium text-bauhaus-muted max-w-xl leading-relaxed">
-              Previous year question papers for VIT students. Zero login required.
+              Previous year question papers for VIT Chennai students. Zero login required.
             </p>
 
             {/* Dominant Hero Search Action */}

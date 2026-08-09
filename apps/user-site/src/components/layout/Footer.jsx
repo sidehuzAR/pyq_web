@@ -90,7 +90,7 @@ export default function Footer() {
             <span>COMMUNITY MAINTAINED</span>
           </div>
           <div className="flex items-center gap-1">
-            <span>BUY US <span className="line-through text-stone-500">COFFEE</span>, SHAWARMA</span>
+            <span>BUY US <span className="line-through text-stone-500">COFFEE</span>, SHAWARMA 🌯</span>
           </div>
         </div>
       </div>
