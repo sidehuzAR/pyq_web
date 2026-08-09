@@ -81,37 +81,37 @@ export default function HomePage({
             <div className="relative w-full max-w-sm space-y-4">
 
               {/* Stat Card 1: Total Papers */}
-              <div className="bg-[#1A1A1A] border-4 border-stone-700 p-5 shadow-2xl relative sharp">
+              <div className="bg-bauhaus-surface border-4 border-bauhaus-border p-5 shadow-2xl relative sharp">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-mono font-black tracking-widest text-stone-400 uppercase">
+                  <span className="text-[10px] font-mono font-black tracking-widest text-bauhaus-muted uppercase">
                     TOTAL PAPERS
                   </span>
                   <div className="w-7 h-7 bg-[#D92D20] text-white flex items-center justify-center sharp">
                     <FileText size={15} />
                   </div>
                 </div>
-                <div className="text-5xl font-black text-white font-display tabular-nums tracking-tight">
+                <div className="text-5xl font-black text-bauhaus-ink font-display tabular-nums tracking-tight">
                   {approvedPapers.length || 13}
                 </div>
-                <div className="mt-2 h-1 bg-stone-800">
+                <div className="mt-2 h-1 bg-bauhaus-elevated">
                   <div className="h-full bg-[#D92D20] w-[75%]" />
                 </div>
               </div>
 
               {/* Stat Card 2: Courses Indexed */}
-              <div className="bg-[#1A1A1A] border-4 border-stone-700 p-5 shadow-2xl relative sharp">
+              <div className="bg-bauhaus-surface border-4 border-bauhaus-border p-5 shadow-2xl relative sharp">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-mono font-black tracking-widest text-stone-400 uppercase">
+                  <span className="text-[10px] font-mono font-black tracking-widest text-bauhaus-muted uppercase">
                     COURSES INDEXED
                   </span>
                   <div className="w-7 h-7 bg-[#00D4FF] text-black flex items-center justify-center sharp">
                     <BookOpen size={15} />
                   </div>
                 </div>
-                <div className="text-5xl font-black text-white font-display tabular-nums tracking-tight">
+                <div className="text-5xl font-black text-bauhaus-ink font-display tabular-nums tracking-tight">
                   {courses.length || 3}
                 </div>
-                <div className="mt-2 h-1 bg-stone-800">
+                <div className="mt-2 h-1 bg-bauhaus-elevated">
                   <div className="h-full bg-[#00D4FF] w-[60%]" />
                 </div>
               </div>
@@ -120,7 +120,7 @@ export default function HomePage({
               <div className="grid grid-cols-3 gap-3">
                 <div
                   onClick={() => navigate('/catalogue?exam=CAT1')}
-                  className="bg-[#D92D20] text-white p-3 border-2 border-stone-700 shadow-md text-center cursor-pointer sharp transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(217,45,32,0.45)] active:scale-95 active:translate-y-0 group"
+                  className="bg-[#D92D20] text-white p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(217,45,32,0.45)] active:scale-95 active:translate-y-0 group"
                   title="Filter CAT-1 Papers"
                 >
                   <div className="text-[9px] font-mono font-bold tracking-widest text-white/80 group-hover:text-white transition-colors">EXAM</div>
@@ -129,7 +129,7 @@ export default function HomePage({
 
                 <div
                   onClick={() => navigate('/catalogue?exam=CAT2')}
-                  className="bg-[#00D4FF] text-black p-3 border-2 border-stone-700 shadow-md text-center cursor-pointer sharp transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(0,212,255,0.45)] active:scale-95 active:translate-y-0 group"
+                  className="bg-[#00D4FF] text-black p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(0,212,255,0.45)] active:scale-95 active:translate-y-0 group"
                   title="Filter CAT-2 Papers"
                 >
                   <div className="text-[9px] font-mono font-bold tracking-widest text-black/80 group-hover:text-black transition-colors">EXAM</div>
@@ -138,7 +138,7 @@ export default function HomePage({
 
                 <div
                   onClick={() => navigate('/catalogue?exam=FAT')}
-                  className="bg-[#E8A838] text-black p-3 border-2 border-stone-700 shadow-md text-center cursor-pointer sharp transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(232,168,56,0.45)] active:scale-95 active:translate-y-0 group"
+                  className="bg-[#E8A838] text-black p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(232,168,56,0.45)] active:scale-95 active:translate-y-0 group"
                   title="Filter FAT Papers"
                 >
                   <div className="text-[9px] font-mono font-bold tracking-widest text-black/80 group-hover:text-black transition-colors">EXAM</div>
@@ -157,16 +157,16 @@ export default function HomePage({
 
 
       {/* Full-Width Sliding Marquee Ticker Strip (Exact match with user photo) */}
-      <div className="w-full bg-[#2B2825] border-y-2 border-stone-700 py-3 overflow-hidden select-none my-6">
+      <div className="w-full bg-bauhaus-surface border-y-2 border-bauhaus-border py-3 overflow-hidden select-none my-6">
         <div className="animate-marquee whitespace-nowrap flex items-center">
           {[...courses, ...courses, ...courses, ...courses].map((course, idx) => (
             <span
               key={idx}
               onClick={() => navigate(`/catalogue/${course.course_code}`)}
-              className="inline-flex items-center gap-4 px-6 font-mono text-xs font-black uppercase text-[#E8A838] tracking-widest cursor-pointer hover:text-white transition-colors"
+              className="inline-flex items-center gap-4 px-6 font-mono text-xs font-black uppercase text-bauhaus-yellow tracking-widest cursor-pointer hover:text-bauhaus-ink transition-colors"
             >
               <span>{course.course_code} - {course.subject_name}</span>
-              <span className="text-[#E8A838] font-black text-xs">★</span>
+              <span className="text-bauhaus-yellow font-black text-xs">★</span>
             </span>
           ))}
         </div>
