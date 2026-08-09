@@ -14,6 +14,7 @@ import { useCourses } from './hooks/useCourses.js';
 import { useApprovedPapers } from './hooks/usePapers.js';
 import { useToast } from './hooks/useToast.js';
 import { createPapersZip } from './lib/zip.js';
+import { downloadPaperAsPdf } from './lib/pdf.js';
 
 function AppContent() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -52,10 +53,11 @@ function AppContent() {
 
   const handleDownloadPaper = async (paper) => {
     try {
-      await createPapersZip([paper], `${paper.course_code}_${paper.exam_type}_${paper.slot_tag}.zip`);
-      addToast(`Downloaded ${paper.course_code} paper scan!`, 'success');
-    } catch {
-      addToast('Download failed.', 'error');
+      await downloadPaperAsPdf(paper);
+      addToast(`Downloaded ${paper.course_code} paper scan as PDF!`, 'success');
+    } catch (err) {
+      console.error(err);
+      addToast('PDF download failed.', 'error');
     }
   };
 
