@@ -47,7 +47,7 @@ export default function HomePage({
             </h1>
 
             <p className="text-base sm:text-lg font-medium text-bauhaus-muted max-w-xl leading-relaxed flex flex-wrap items-center gap-y-2">
-              <span>Previous year question papers for VIT Chennai students. Zero login required.</span>
+              <span>Previous year question papers for VIT Chennai students. </span>
               <span className="bg-bauhaus-yellow text-bauhaus-canvas px-2 py-0.5 text-xs font-mono font-black uppercase tracking-wider sharp border border-bauhaus-border shadow-bauhaus-sm inline-block">
                 [FOR ACE CURRICULUM]
               </span>
@@ -79,7 +79,7 @@ export default function HomePage({
           {/* Right Column (Stats Cards & Exam Blocks - Exact match with Photo 2) */}
           <div className="lg:col-span-5 flex flex-col items-center justify-center">
             <div className="relative w-full max-w-sm space-y-4">
-              
+
               {/* Stat Card 1: Total Papers */}
               <div className="bg-[#1A1A1A] border-4 border-stone-700 p-5 shadow-2xl relative sharp">
                 <div className="flex items-center justify-between mb-1">
