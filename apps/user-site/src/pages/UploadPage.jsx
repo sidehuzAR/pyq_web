@@ -24,14 +24,16 @@ export default function UploadPage({ courses = [], onToast }) {
       // Clean up raw database errors for the frontend
       if (errMsg.includes('foreign key constraint') || errMsg.includes('violates foreign key')) {
         if (errMsg.includes('course_code')) {
-           errMsg = 'Invalid course code. If entering manually, the "OTHERS" fallback course might be missing in the database. Please contact an admin.';
+           errMsg = 'Invalid course code. Please select a valid course from the list or check "SUBJECT NOT FOUND? ENTER MANUALLY" if your subject is missing.';
         } else {
            errMsg = 'Invalid reference data provided. Please check your inputs.';
         }
       } else if (errMsg.includes('duplicate key')) {
-        errMsg = 'This paper scan has already been uploaded.';
+        errMsg = 'A paper with these exact details has already been uploaded.';
       } else if (errMsg.includes('row-level security') || errMsg.includes('RLS')) {
-        errMsg = 'You do not have permission to perform this upload.';
+        errMsg = 'Upload denied due to security policies. You do not have permission to perform this action.';
+      } else {
+        errMsg = 'An unexpected error occurred during upload. Please try again.';
       }
       
       onToast('Upload failed: ' + errMsg, 'error');
