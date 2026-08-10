@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/layout/Header.jsx';
 import Footer from './components/layout/Footer.jsx';
+import FloatingBackground from './components/layout/FloatingBackground.jsx';
 import ToastStack from './components/shared/ToastStack.jsx';
 
 import HomePage from './pages/HomePage.jsx';
@@ -62,10 +63,12 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-bauhaus-canvas text-bauhaus-ink font-sans selection:bg-bauhaus-yellow selection:text-bauhaus-canvas transition-colors duration-200">
-      <Header theme={theme} toggleTheme={toggleTheme} />
+    <div className="relative min-h-screen flex flex-col bg-bauhaus-canvas text-bauhaus-ink font-sans selection:bg-bauhaus-yellow selection:text-bauhaus-canvas transition-colors duration-200">
+      <FloatingBackground />
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <Header theme={theme} toggleTheme={toggleTheme} />
 
-      <main className="flex-1">
+        <main className="flex-1">
         <Routes>
           <Route
             path="/"
@@ -143,6 +146,7 @@ function AppContent() {
       )}
 
       <ToastStack toasts={toasts} onClose={removeToast} />
+      </div>
     </div>
   );
 }

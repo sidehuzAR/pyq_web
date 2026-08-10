@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ToastStack from './components/shared/ToastStack.jsx';
+import FloatingBackground from './components/shared/FloatingBackground.jsx';
 import { useToast } from './hooks/useToast.js';
 import { useCourses } from './hooks/useCourses.js';
 import { useAllPapers } from './hooks/usePapers.js';
@@ -55,8 +56,10 @@ function AdminApp() {
   }
 
   return (
-    <div className="min-h-screen bg-bauhaus-canvas text-bauhaus-ink font-sans transition-colors duration-200">
-      {/* Admin Header */}
+    <div className="relative min-h-screen bg-bauhaus-canvas text-bauhaus-ink font-sans transition-colors duration-200">
+      <FloatingBackground />
+      <div className="relative z-10 min-h-screen flex flex-col">
+        {/* Admin Header */}
       <header className="bg-bauhaus-surface border-b-2 border-bauhaus-border px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 border-2 border-bauhaus-border bg-bauhaus-elevated p-1 shadow-bauhaus">
@@ -126,6 +129,7 @@ function AdminApp() {
       </main>
 
       <ToastStack toasts={toasts} onClose={removeToast} />
+      </div>
     </div>
   );
 }
