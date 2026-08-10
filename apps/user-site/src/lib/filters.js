@@ -60,13 +60,14 @@ export function normalizeSemesterName(semStr) {
   if (!semStr) return 'Fall Sem';
   const str = String(semStr).trim().toLowerCase();
 
-  // Odd semester numbers or Fall -> Fall Sem
-  if (/\b(1|3|5|7|9|odd)\b/.test(str) || str.includes('fall')) {
-    return 'Fall Sem';
-  }
-  // Even semester numbers, Winter, or Win -> Win Sem
-  if (/\b(2|4|6|8|even|win|winter)\b/.test(str) || str.includes('win') || str.includes('winter')) {
-    return 'Win Sem';
+  if (str.includes('fall') || str.includes('odd')) return 'Fall Sem';
+  if (str.includes('win') || str.includes('even')) return 'Win Sem';
+
+  const digitMatch = str.match(/\d+/);
+  if (digitMatch) {
+    const num = parseInt(digitMatch[0], 10);
+    if (num % 2 === 1) return 'Fall Sem';
+    if (num % 2 === 0) return 'Win Sem';
   }
 
   return semStr;
@@ -92,7 +93,7 @@ export function getAvailableSubjectFilters(subjectPapers) {
   const slots = Array.from(new Set(subjectPapers.map(p => p.slot_tag))).sort();
   const exams = Array.from(new Set(subjectPapers.map(p => p.exam_type))).sort();
   const years = Array.from(new Set(subjectPapers.map(p => p.academic_year))).sort().reverse();
-  const semesters = Array.from(new Set(subjectPapers.map(p => p.semester))).sort();
+  const semesters = Array.from(new Set(subjectPapers.map(p => normalizeSemesterName(p.semester)))).sort();
 
   return { slots, exams, years, semesters };
 }

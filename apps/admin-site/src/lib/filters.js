@@ -36,12 +36,31 @@ export function filterPapers(papers, { searchQuery = '', selectedExams = [], sel
     }
 
     // Semester filter (OR within group)
-    if (selectedSemesters.length > 0 && !selectedSemesters.includes(paper.semester)) {
-      return false;
+    if (selectedSemesters.length > 0) {
+      const paperSemNorm = normalizeSemesterName(paper.semester);
+      const matches = selectedSemesters.some(s => normalizeSemesterName(s) === paperSemNorm);
+      if (!matches) return false;
     }
 
     return true;
   });
+}
+
+export function normalizeSemesterName(semStr) {
+  if (!semStr) return 'Fall Sem';
+  const str = String(semStr).trim().toLowerCase();
+
+  if (str.includes('fall') || str.includes('odd')) return 'Fall Sem';
+  if (str.includes('win') || str.includes('even')) return 'Win Sem';
+
+  const digitMatch = str.match(/\d+/);
+  if (digitMatch) {
+    const num = parseInt(digitMatch[0], 10);
+    if (num % 2 === 1) return 'Fall Sem';
+    if (num % 2 === 0) return 'Win Sem';
+  }
+
+  return semStr;
 }
 
 export function sortPapers(papers, sortBy = 'year-desc') {
@@ -64,7 +83,7 @@ export function getAvailableSubjectFilters(subjectPapers) {
   const slots = Array.from(new Set(subjectPapers.map(p => p.slot_tag))).sort();
   const exams = Array.from(new Set(subjectPapers.map(p => p.exam_type))).sort();
   const years = Array.from(new Set(subjectPapers.map(p => p.academic_year))).sort().reverse();
-  const semesters = Array.from(new Set(subjectPapers.map(p => p.semester))).sort();
+  const semesters = Array.from(new Set(subjectPapers.map(p => normalizeSemesterName(p.semester)))).sort();
 
   return { slots, exams, years, semesters };
 }
