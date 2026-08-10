@@ -1,6 +1,20 @@
 @import "tailwindcss";
 
 @layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  .cursor-pointer {
+    touch-action: manipulation;
+  }
+
   :root {
     /* Light Theme (Cream Base) */
     --bg-canvas: #F4F0E6;

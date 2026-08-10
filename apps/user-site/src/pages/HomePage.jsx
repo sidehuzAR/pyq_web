@@ -120,7 +120,7 @@ export default function HomePage({
               <div className="grid grid-cols-3 gap-3">
                 <div
                   onClick={() => navigate('/catalogue?exam=CAT1')}
-                  className="bg-[#D92D20] text-white p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(217,45,32,0.45)] active:scale-95 active:translate-y-0 group"
+                  className="bg-[#D92D20] text-white p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-150 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(217,45,32,0.45)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-95 group"
                   title="Filter CAT-1 Papers"
                 >
                   <div className="text-[9px] font-mono font-bold tracking-widest text-white/80 group-hover:text-white transition-colors">EXAM</div>
@@ -129,7 +129,7 @@ export default function HomePage({
 
                 <div
                   onClick={() => navigate('/catalogue?exam=CAT2')}
-                  className="bg-[#00D4FF] text-black p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(0,212,255,0.45)] active:scale-95 active:translate-y-0 group"
+                  className="bg-[#00D4FF] text-black p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-150 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(0,212,255,0.45)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-95 group"
                   title="Filter CAT-2 Papers"
                 >
                   <div className="text-[9px] font-mono font-bold tracking-widest text-black/80 group-hover:text-black transition-colors">EXAM</div>
@@ -138,7 +138,7 @@ export default function HomePage({
 
                 <div
                   onClick={() => navigate('/catalogue?exam=FAT')}
-                  className="bg-[#E8A838] text-black p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(232,168,56,0.45)] active:scale-95 active:translate-y-0 group"
+                  className="bg-[#E8A838] text-black p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-150 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(232,168,56,0.45)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-95 group"
                   title="Filter FAT Papers"
                 >
                   <div className="text-[9px] font-mono font-bold tracking-widest text-black/80 group-hover:text-black transition-colors">EXAM</div>

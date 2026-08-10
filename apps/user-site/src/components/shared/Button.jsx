@@ -14,19 +14,19 @@ export default function Button({
 
   switch (variant) {
     case 'primary':
-      variantStyles = 'bg-bauhaus-red text-white border-2 border-bauhaus-border hover:brightness-110 shadow-bauhaus-red hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(217,45,32,0.4)]';
+      variantStyles = 'bg-bauhaus-red text-white border-2 border-bauhaus-border hover:brightness-110 shadow-bauhaus-red hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(217,45,32,0.4)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-90';
       break;
     case 'secondary':
-      variantStyles = 'bg-bauhaus-yellow text-bauhaus-canvas border-2 border-bauhaus-border hover:brightness-110 shadow-bauhaus-yellow font-black hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(232,168,56,0.4)]';
+      variantStyles = 'bg-bauhaus-yellow text-bauhaus-canvas border-2 border-bauhaus-border hover:brightness-110 shadow-bauhaus-yellow font-black hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(232,168,56,0.4)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-90';
       break;
     case 'tertiary':
-      variantStyles = 'bg-bauhaus-blue text-bauhaus-canvas border-2 border-bauhaus-border hover:brightness-110 shadow-bauhaus-blue font-black hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,212,255,0.4)]';
+      variantStyles = 'bg-bauhaus-blue text-bauhaus-canvas border-2 border-bauhaus-border hover:brightness-110 shadow-bauhaus-blue font-black hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,212,255,0.4)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-90';
       break;
     case 'outline':
-      variantStyles = 'bg-bauhaus-surface text-bauhaus-ink border-2 border-bauhaus-border hover:bg-bauhaus-elevated shadow-bauhaus hover:-translate-y-0.5 hover:shadow-md';
+      variantStyles = 'bg-bauhaus-surface text-bauhaus-ink border-2 border-bauhaus-border hover:bg-bauhaus-elevated shadow-bauhaus hover:-translate-y-0.5 hover:shadow-md active:scale-95 active:translate-y-0.5 active:shadow-none active:bg-bauhaus-elevated';
       break;
     default:
-      variantStyles = 'bg-bauhaus-red text-white border-2 border-bauhaus-border hover:brightness-110 shadow-bauhaus-red hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(217,45,32,0.4)]';
+      variantStyles = 'bg-bauhaus-red text-white border-2 border-bauhaus-border hover:brightness-110 shadow-bauhaus-red hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(217,45,32,0.4)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-90';
   }
 
   let sizeStyles = '';
@@ -46,7 +46,7 @@ export default function Button({
       type={type}
       disabled={disabled}
       onClick={onClick}
-      className={`inline-flex items-center justify-center gap-2 sharp uppercase cursor-pointer transition-all duration-200 ease-out active:translate-y-0 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed ${variantStyles} ${sizeStyles} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 sharp uppercase cursor-pointer transition-all duration-150 ease-out active:scale-95 active:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed ${variantStyles} ${sizeStyles} ${className}`}
       {...props}
     >
       {children}
