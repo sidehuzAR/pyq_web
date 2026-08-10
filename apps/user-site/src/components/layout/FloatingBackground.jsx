@@ -6,10 +6,19 @@ export default function FloatingBackground() {
       {/* Background Retro Grid Texture */}
       <div className="absolute inset-0 bg-grid-dots opacity-[0.20] dark:opacity-[0.30]" />
 
-      {/* Vibrant Ambient Radial Glow Orbs */}
-      <div className="absolute top-10 left-1/3 w-[600px] h-[600px] bg-bauhaus-red/25 dark:bg-bauhaus-red/30 rounded-full blur-3xl animate-pulse-soft" />
-      <div className="absolute top-1/3 right-1/4 w-[600px] h-[600px] bg-bauhaus-blue/25 dark:bg-bauhaus-blue/30 rounded-full blur-3xl animate-pulse-soft delay-1000" />
-      <div className="absolute bottom-10 left-1/4 w-[500px] h-[500px] bg-bauhaus-yellow/25 dark:bg-bauhaus-yellow/30 rounded-full blur-3xl animate-pulse-soft delay-2000" />
+      {/* Vibrant Ambient Radial Glow Orbs (GPU Optimized with radial-gradient) */}
+      <div
+        className="absolute top-10 left-1/3 w-[600px] h-[600px] rounded-full animate-pulse-soft transform-gpu"
+        style={{ background: 'radial-gradient(circle, rgba(217, 45, 32, 0.20) 0%, rgba(217, 45, 32, 0.05) 50%, transparent 70%)' }}
+      />
+      <div
+        className="absolute top-1/3 right-1/4 w-[600px] h-[600px] rounded-full animate-pulse-soft delay-1000 transform-gpu"
+        style={{ background: 'radial-gradient(circle, rgba(0, 212, 255, 0.20) 0%, rgba(0, 212, 255, 0.05) 50%, transparent 70%)' }}
+      />
+      <div
+        className="absolute bottom-10 left-1/4 w-[500px] h-[500px] rounded-full animate-pulse-soft delay-2000 transform-gpu"
+        style={{ background: 'radial-gradient(circle, rgba(232, 168, 56, 0.20) 0%, rgba(232, 168, 56, 0.05) 50%, transparent 70%)' }}
+      />
 
       {/* VIBRANT FLOATING ACCENT LINES PASSING DIRECTLY BEHIND THE CARDS */}
       <div className="absolute top-[160px] left-0 right-0 flex items-center animate-float-slow">

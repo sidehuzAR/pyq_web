@@ -6,9 +6,15 @@ export default function FloatingBackground() {
       {/* Background Retro Grid Texture */}
       <div className="absolute inset-0 bg-grid-dots opacity-[0.12] dark:opacity-[0.20]" />
 
-      {/* Vibrant Ambient Radial Glow Orbs */}
-      <div className="absolute top-10 left-1/3 w-[500px] h-[500px] bg-bauhaus-red/20 dark:bg-bauhaus-red/25 rounded-full blur-3xl animate-pulse-soft" />
-      <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-bauhaus-blue/20 dark:bg-bauhaus-blue/25 rounded-full blur-3xl animate-pulse-soft delay-1000" />
+      {/* Vibrant Ambient Radial Glow Orbs (GPU Optimized with radial-gradient) */}
+      <div
+        className="absolute top-10 left-1/3 w-[500px] h-[500px] rounded-full animate-pulse-soft transform-gpu"
+        style={{ background: 'radial-gradient(circle, rgba(217, 45, 32, 0.20) 0%, rgba(217, 45, 32, 0.05) 50%, transparent 70%)' }}
+      />
+      <div
+        className="absolute top-1/3 right-1/4 w-[500px] h-[500px] rounded-full animate-pulse-soft delay-1000 transform-gpu"
+        style={{ background: 'radial-gradient(circle, rgba(0, 212, 255, 0.20) 0%, rgba(0, 212, 255, 0.05) 50%, transparent 70%)' }}
+      />
 
       {/* Floating Admin Badges & Geometric Elements */}
       <div className="absolute top-[15%] left-[25%] animate-float-slow">
