@@ -9,7 +9,8 @@ export async function createPapersZip(papers, customFilename = null) {
   const zip = new JSZip();
 
   for (const paper of papers) {
-    const filename = `${paper.course_code}_${paper.exam_type}_${paper.slot_tag}_${paper.academic_year}.jpg`;
+    const ext = paper.file_url.toLowerCase().split('?')[0].split('.').pop() || 'jpg';
+    const filename = `${paper.course_code}_${paper.exam_type}_${paper.slot_tag}_${paper.academic_year}.${ext}`;
     try {
       const resp = await fetch(paper.file_url);
       const blob = await resp.blob();

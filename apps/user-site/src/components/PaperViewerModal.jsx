@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, ZoomIn, ZoomOut, RotateCcw, Maximize2, Download, Share2, AlertTriangle, Check, CheckCircle } from 'lucide-react';
+import { downloadPaperAsPdf } from '../lib/pdf.js';
 
 export default function PaperViewerModal({ paper, onClose, onToast }) {
   const [zoom, setZoom] = useState(1);
@@ -82,12 +83,13 @@ export default function PaperViewerModal({ paper, onClose, onToast }) {
             <button
               className="dock-btn"
               title="Download Paper"
-              onClick={() => {
-                const link = document.createElement('a');
-                link.href = paper.file_url;
-                link.download = `${paper.course_code}_${paper.exam_type}_${paper.slot_tag}.jpg`;
-                link.click();
+              onClick={async () => {
                 onToast(`Downloading ${paper.course_code}...`);
+                try {
+                  await downloadPaperAsPdf(paper);
+                } catch (e) {
+                  onToast('Download failed.', 'error');
+                }
               }}
             >
               <Download size={18} />

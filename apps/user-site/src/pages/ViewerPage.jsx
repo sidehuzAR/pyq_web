@@ -6,6 +6,7 @@ import ViewerToolbar from '../components/viewer/ViewerToolbar.jsx';
 import MetadataBar from '../components/viewer/MetadataBar.jsx';
 import ReportModal from '../components/viewer/ReportModal.jsx';
 import Button from '../components/shared/Button.jsx';
+import { downloadPaperAsPdf } from '../lib/pdf.js';
 
 export default function ViewerPage({
   paper: modalPaper = null,
@@ -49,15 +50,16 @@ export default function ViewerPage({
     onToast('Direct paper link copied to clipboard!', 'success');
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (onDownloadPaper) {
       onDownloadPaper(paper);
     } else {
-      const link = document.createElement('a');
-      link.href = paper.file_url;
-      link.download = `${paper.course_code}_${paper.exam_type}_${paper.slot_tag}.jpg`;
-      link.click();
       onToast(`Downloading ${paper.course_code}...`, 'info');
+      try {
+        await downloadPaperAsPdf(paper);
+      } catch (e) {
+        onToast('Download failed.', 'error');
+      }
     }
   };
 

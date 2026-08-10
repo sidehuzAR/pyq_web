@@ -8,6 +8,22 @@ export async function downloadPaperAsPdf(paper) {
   const filename = `${paper.course_code}_${paper.exam_type}_${paper.slot_tag}_${paper.academic_year || 'scan'}.pdf`;
 
   try {
+    const isPdf = paper.file_url.toLowerCase().split('?')[0].endsWith('.pdf');
+    if (isPdf) {
+      const response = await fetch(paper.file_url);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return filename;
+    }
+
     const imgData = await loadImageAsDataUrl(paper.file_url);
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -52,12 +68,23 @@ export async function downloadPaperAsPdf(paper) {
     pdf.save(filename);
     return filename;
   } catch (err) {
-    const link = document.createElement('a');
-    link.href = paper.file_url;
-    link.download = filename;
-    link.target = '_blank';
-    link.click();
-    return filename;
+    try {
+      const response = await fetch(paper.file_url);
+      if (!response.ok) throw new Error('Fallback fetch failed');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return filename;
+    } catch (fallbackErr) {
+      console.error('Download failed:', fallbackErr);
+      throw new Error('Could not download file securely.');
+    }
   }
 }
 

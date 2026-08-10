@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Filter, CheckSquare, Square, Download, Eye, ChevronDown, CheckCircle, FolderOpen } from 'lucide-react';
 import JSZip from 'jszip';
 import { AVAILABLE_SLOTS, ACADEMIC_YEARS, SEMESTERS, EXAM_TYPES } from '../data/initialData.js';
+import { downloadPaperAsPdf } from '../lib/pdf.js';
 
 export default function Catalogue({
   papers,
@@ -368,13 +369,14 @@ export default function Catalogue({
                         <button
                           className="btn-icon-mini"
                           title="Download Image"
-                          onClick={(e) => {
+                          onClick={async (e) => {
                             e.stopPropagation();
-                            const link = document.createElement('a');
-                            link.href = paper.file_url;
-                            link.download = `${paper.course_code}_${paper.exam_type}_${paper.slot_tag}.jpg`;
-                            link.click();
                             onToast(`Downloading ${paper.course_code}...`);
+                            try {
+                              await downloadPaperAsPdf(paper);
+                            } catch (error) {
+                              onToast('Download failed.', 'error');
+                            }
                           }}
                         >
                           <Download size={14} />
