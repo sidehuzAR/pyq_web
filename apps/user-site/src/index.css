@@ -18,8 +18,8 @@
   :root {
     /* Light Theme (Cream Base) */
     --bg-canvas: #F4F0E6;
-    --bg-surface: #FFFFFF;
-    --bg-elevated: #F9F7F1;
+    --bg-surface: rgba(255, 255, 255, 0.80);
+    --bg-elevated: rgba(249, 247, 241, 0.84);
     --text-ink: #111111;
     --text-muted: #666666;
     --border-base: #111111;
@@ -29,10 +29,10 @@
   }
 
   .dark {
-    /* Dark Theme (Dark Grey/Brown Base - using stone palette) */
+    /* Dark Theme (Dark Grey/Brown Base - translucent glass) */
     --bg-canvas: #1C1917; /* stone-900 */
-    --bg-surface: #292524; /* stone-800 */
-    --bg-elevated: #44403C; /* stone-700 */
+    --bg-surface: rgba(41, 37, 36, 0.78); /* stone-800 translucent */
+    --bg-elevated: rgba(68, 64, 60, 0.82); /* stone-700 translucent */
     --text-ink: #F5F5F4; /* stone-100 */
     --text-muted: #A8A29E; /* stone-400 */
     --border-base: #57534E; /* stone-600 */

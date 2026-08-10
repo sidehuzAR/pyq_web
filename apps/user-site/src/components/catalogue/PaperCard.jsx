@@ -15,7 +15,7 @@ export default function PaperCard({
 }) {
   return (
     <div
-      className={`bg-bauhaus-surface border-2 border-bauhaus-border p-4 flex flex-col justify-between relative transition-all duration-300 ease-out sharp ${
+      className={`bg-bauhaus-surface/85 backdrop-blur-md border-2 border-bauhaus-border p-4 flex flex-col justify-between relative transition-all duration-300 ease-out sharp ${
         isSelected
           ? 'bg-bauhaus-yellow/10 border-4 border-bauhaus-red shadow-bauhaus-red scale-[1.01]'
           : 'shadow-bauhaus hover:border-bauhaus-blue hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.25)]'

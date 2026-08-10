@@ -6,11 +6,11 @@ import { Sun, Moon } from 'lucide-react';
 
 export default function Header({ searchQuery, setSearchQuery, courses, theme, toggleTheme }) {
   return (
-    <header className="sticky top-0 z-40 bg-bauhaus-canvas/90 backdrop-blur-md border-b-2 border-bauhaus-border px-4 py-3 transition-colors duration-200">
+    <header className="sticky top-0 z-40 bg-bauhaus-canvas/80 backdrop-blur-md border-b-2 border-bauhaus-border px-4 py-3 transition-colors duration-200">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Geometric Bauhaus Logo */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="flex items-center gap-1 border-2 border-bauhaus-border bg-bauhaus-surface p-1.5 shadow-bauhaus group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-transform">
+          <div className="flex items-center gap-1 border-2 border-bauhaus-border bg-bauhaus-surface/90 backdrop-blur-sm p-1.5 shadow-bauhaus group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-transform">
             <div className="w-4 h-4 bg-bauhaus-red border border-bauhaus-border"></div>
             <div className="w-4 h-4 rounded-full bg-bauhaus-blue border border-bauhaus-border"></div>
             <div className="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[14px] border-b-bauhaus-yellow drop-shadow-[1px_1px_0px_var(--border-base)]"></div>
