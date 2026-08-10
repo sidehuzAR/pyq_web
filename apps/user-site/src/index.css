@@ -16,10 +16,10 @@
   }
 
   :root {
-    /* Light Theme (Cream Base) */
+    /* Light Theme (Cream Base + Frosted Glass Surface) */
     --bg-canvas: #F4F0E6;
-    --bg-surface: rgba(255, 255, 255, 0.80);
-    --bg-elevated: rgba(249, 247, 241, 0.84);
+    --bg-surface: rgba(255, 255, 255, 0.55);
+    --bg-elevated: rgba(249, 247, 241, 0.65);
     --text-ink: #111111;
     --text-muted: #666666;
     --border-base: #111111;
@@ -29,10 +29,10 @@
   }
 
   .dark {
-    /* Dark Theme (Dark Grey/Brown Base - translucent glass) */
+    /* Dark Theme (Dark Stone Base + Translucent Cyber Glass Surface) */
     --bg-canvas: #1C1917; /* stone-900 */
-    --bg-surface: rgba(41, 37, 36, 0.78); /* stone-800 translucent */
-    --bg-elevated: rgba(68, 64, 60, 0.82); /* stone-700 translucent */
+    --bg-surface: rgba(28, 25, 23, 0.45); /* stone-900 translucent glass */
+    --bg-elevated: rgba(44, 40, 36, 0.55); /* stone-800 translucent glass */
     --text-ink: #F5F5F4; /* stone-100 */
     --text-muted: #A8A29E; /* stone-400 */
     --border-base: #57534E; /* stone-600 */

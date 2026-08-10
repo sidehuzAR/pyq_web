@@ -30,14 +30,14 @@ export default function HomePage({
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
       {/* Hero Section (60 / 40 Bauhaus Split) */}
-      <section className="bg-bauhaus-surface/85 backdrop-blur-md border-4 border-bauhaus-border p-6 sm:p-10 shadow-bauhaus-lg sharp relative overflow-hidden transition-colors duration-200">
+      <section className="bg-bauhaus-surface backdrop-blur-xl border-4 border-bauhaus-border p-6 sm:p-10 shadow-bauhaus-lg sharp relative overflow-hidden transition-colors duration-200">
         {/* Top Accent Strip */}
         <div className="h-3 bg-bauhaus-red w-full -mt-6 sm:-mt-10 -mx-6 sm:-mx-10 mb-8 border-b-2 border-bauhaus-border"></div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Left Column (60%) */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-2 bg-bauhaus-elevated/90 backdrop-blur-sm text-bauhaus-blue border border-bauhaus-border px-3 py-1 text-xs font-mono font-black uppercase tracking-widest sharp transition-colors duration-200">
+            <div className="inline-flex items-center gap-2 bg-bauhaus-elevated backdrop-blur-md text-bauhaus-blue border border-bauhaus-border px-3 py-1 text-xs font-mono font-black uppercase tracking-widest sharp transition-colors duration-200">
               <span>00</span> ARCHIVE SYSTEM
             </div>
 
@@ -81,7 +81,7 @@ export default function HomePage({
             <div className="relative w-full max-w-sm space-y-4">
 
               {/* Stat Card 1: Total Papers */}
-              <div className="bg-bauhaus-surface/85 backdrop-blur-md border-4 border-bauhaus-border p-5 shadow-2xl relative sharp">
+              <div className="bg-bauhaus-surface backdrop-blur-xl border-4 border-bauhaus-border p-5 shadow-2xl relative sharp">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[10px] font-mono font-black tracking-widest text-bauhaus-muted uppercase">
                     TOTAL PAPERS
@@ -99,7 +99,7 @@ export default function HomePage({
               </div>
 
               {/* Stat Card 2: Courses Indexed */}
-              <div className="bg-bauhaus-surface/85 backdrop-blur-md border-4 border-bauhaus-border p-5 shadow-2xl relative sharp">
+              <div className="bg-bauhaus-surface backdrop-blur-xl border-4 border-bauhaus-border p-5 shadow-2xl relative sharp">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[10px] font-mono font-black tracking-widest text-bauhaus-muted uppercase">
                     COURSES INDEXED
@@ -120,7 +120,7 @@ export default function HomePage({
               <div className="grid grid-cols-3 gap-3">
                 <div
                   onClick={() => navigate('/catalogue?exam=CAT1')}
-                  className="bg-[#D92D20] text-white p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-150 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(217,45,32,0.45)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-95 group"
+                  className="bg-[#D92D20]/90 backdrop-blur-sm text-white p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-150 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(217,45,32,0.45)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-95 group"
                   title="Filter CAT-1 Papers"
                 >
                   <div className="text-[9px] font-mono font-bold tracking-widest text-white/80 group-hover:text-white transition-colors">EXAM</div>
@@ -129,7 +129,7 @@ export default function HomePage({
 
                 <div
                   onClick={() => navigate('/catalogue?exam=CAT2')}
-                  className="bg-[#00D4FF] text-black p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-150 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(0,212,255,0.45)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-95 group"
+                  className="bg-[#00D4FF]/90 backdrop-blur-sm text-black p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-150 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(0,212,255,0.45)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-95 group"
                   title="Filter CAT-2 Papers"
                 >
                   <div className="text-[9px] font-mono font-bold tracking-widest text-black/80 group-hover:text-black transition-colors">EXAM</div>
@@ -138,7 +138,7 @@ export default function HomePage({
 
                 <div
                   onClick={() => navigate('/catalogue?exam=FAT')}
-                  className="bg-[#E8A838] text-black p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-150 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(232,168,56,0.45)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-95 group"
+                  className="bg-[#E8A838]/90 backdrop-blur-sm text-black p-3 border-2 border-bauhaus-border shadow-md text-center cursor-pointer sharp transition-all duration-150 ease-out hover:-translate-y-1 hover:scale-105 hover:shadow-[0_8px_20px_rgba(232,168,56,0.45)] active:scale-95 active:translate-y-0.5 active:shadow-none active:brightness-95 group"
                   title="Filter FAT Papers"
                 >
                   <div className="text-[9px] font-mono font-bold tracking-widest text-black/80 group-hover:text-black transition-colors">EXAM</div>
@@ -157,7 +157,7 @@ export default function HomePage({
 
 
       {/* Full-Width Sliding Marquee Ticker Strip (Exact match with user photo) */}
-      <div className="w-full bg-bauhaus-surface/80 backdrop-blur-md border-y-2 border-bauhaus-border py-3 overflow-hidden select-none my-6">
+      <div className="w-full bg-bauhaus-surface backdrop-blur-xl border-y-2 border-bauhaus-border py-3 overflow-hidden select-none my-6">
         <div className="animate-marquee whitespace-nowrap flex items-center">
           {[...courses, ...courses, ...courses, ...courses].map((course, idx) => (
             <span
@@ -173,7 +173,7 @@ export default function HomePage({
       </div>
 
       {/* Section 01: Contribute Banner */}
-      <section className="bg-bauhaus-elevated/85 backdrop-blur-md text-bauhaus-ink border-4 border-bauhaus-border p-8 shadow-bauhaus-lg sharp flex flex-col md:flex-row items-center justify-between gap-6 transition-colors duration-200">
+      <section className="bg-bauhaus-elevated backdrop-blur-xl text-bauhaus-ink border-4 border-bauhaus-border p-8 shadow-bauhaus-lg sharp flex flex-col md:flex-row items-center justify-between gap-6 transition-colors duration-200">
         <div className="space-y-2">
           <div className="font-mono text-xs font-bold text-bauhaus-yellow uppercase tracking-widest flex items-center gap-2">
             <Filter size={14} />
