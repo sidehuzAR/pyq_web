@@ -101,14 +101,8 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
     let finalCourseCode = courseCode.trim().toUpperCase();
     let finalSubjectName = subjectName.trim();
 
-    // Check if the typed course exists
+    // Check if the typed course exists in the registry
     const courseExists = courses.some(c => c.course_code.toUpperCase() === finalCourseCode);
-
-    if (!courseExists) {
-      // Append the original course code to the subject name so admin knows what it was
-      finalSubjectName = `[${finalCourseCode}] ${finalSubjectName}`;
-      finalCourseCode = 'OTHERS'; // Fallback course code
-    }
 
     const payload = {
       course_code: finalCourseCode,
@@ -117,7 +111,8 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
       slot_tag: slotTag,
       academic_year: academicYear,
       semester: semester,
-      has_answer_key: hasAnswerKey
+      has_answer_key: hasAnswerKey,
+      is_new_course: !courseExists
     };
 
     incrementRateLimitCount();

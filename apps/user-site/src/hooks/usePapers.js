@@ -36,9 +36,26 @@ export function useApprovedPapers() {
 // Upload a new paper (goes to pending)
 export function useUploadPaper() {
   const uploadPaper = async ({ file, metadata }) => {
+    // Destructure the is_new_course flag (not a DB column)
+    const { is_new_course, ...paperMetadata } = metadata;
+
+    // If the course doesn't exist in the registry, auto-register it first
+    // so the FK constraint on papers.course_code is satisfied
+    if (is_new_course) {
+      const { error: courseError } = await supabase
+        .from('courses')
+        .upsert(
+          [{ course_code: paperMetadata.course_code, subject_name: paperMetadata.subject_name }],
+          { onConflict: 'course_code' }
+        );
+      if (courseError) {
+        return { error: { message: `Failed to register new course: ${courseError.message}` } };
+      }
+    }
+
     // 1. Upload file to Supabase Storage
     const fileExt = file.name.split('.').pop();
-    const fileName = `${metadata.course_code}_${metadata.exam_type}_${Date.now()}.${fileExt}`;
+    const fileName = `${paperMetadata.course_code}_${paperMetadata.exam_type}_${Date.now()}.${fileExt}`;
 
     const { data: storageData, error: storageError } = await supabase.storage
       .from('paper-scans')
@@ -50,7 +67,7 @@ export function useUploadPaper() {
 
     // 2. Insert paper record with file_url and status 'pending'
     const { error: dbError } = await supabase.from('papers').insert([{
-      ...metadata,
+      ...paperMetadata,
       file_url: urlData.publicUrl,
       status: 'pending',
     }]);
