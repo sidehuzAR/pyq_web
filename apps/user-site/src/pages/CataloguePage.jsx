@@ -97,7 +97,7 @@ export default function CataloguePage({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-black/40 border-2 border-bauhaus-border text-base font-mono font-bold uppercase placeholder-gray-500 dark:placeholder-stone-400 text-black dark:text-white sharp focus:outline-none focus:ring-4 focus:ring-bauhaus-yellow focus:border-black transition-all"
+            className="w-full pl-12 pr-4 py-3.5 bg-white border-2 border-bauhaus-border text-base font-mono font-bold uppercase placeholder-gray-500 text-black sharp focus:outline-none focus:ring-4 focus:ring-bauhaus-yellow focus:border-black transition-all"
             placeholder="SEARCH BY COURSE CODE OR SUBJECT NAME..."
           />
         </div>

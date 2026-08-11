@@ -31,7 +31,7 @@ export default function SearchBar({
 
   return (
     <div className={`relative w-full max-w-xl ${className}`} ref={containerRef}>
-      <div className="relative flex items-center bg-bauhaus-surface border-2 border-bauhaus-border shadow-bauhaus focus-within:ring-2 focus-within:ring-bauhaus-yellow focus-within:border-bauhaus-yellow transition-colors duration-200">
+      <div className="relative flex items-center bg-white border-2 border-bauhaus-yellow shadow-bauhaus focus-within:ring-2 focus-within:ring-bauhaus-yellow focus-within:border-bauhaus-yellow transition-colors duration-200">
         <Search size={18} className="absolute left-3 text-bauhaus-muted pointer-events-none" />
         <input
           type="text"
@@ -44,7 +44,7 @@ export default function SearchBar({
             if (searchQuery.trim()) setShowDropdown(true);
           }}
           placeholder={placeholder}
-          className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-black/50 text-black dark:text-white placeholder-gray-500 dark:placeholder-stone-400 text-sm font-bold uppercase tracking-wider focus:outline-none sharp"
+          className="w-full pl-10 pr-10 py-2.5 bg-white text-black placeholder-gray-500 text-sm font-bold uppercase tracking-wider focus:outline-none sharp"
         />
         {searchQuery && (
           <button
