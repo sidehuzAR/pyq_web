@@ -87,6 +87,22 @@ export default function CataloguePage({
         accentColor="red"
       />
 
+      {/* Search Input - Top Primary Filter */}
+      <div className="bg-bauhaus-surface backdrop-blur-xl border-4 border-bauhaus-border p-4 shadow-bauhaus sharp flex gap-4">
+        <div className="relative flex-1">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <Search className="text-bauhaus-muted" size={20} />
+          </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-black/40 border-2 border-bauhaus-border text-base font-mono font-bold uppercase placeholder-gray-500 dark:placeholder-stone-400 text-black dark:text-white sharp focus:outline-none focus:ring-4 focus:ring-bauhaus-yellow focus:border-black transition-all"
+            placeholder="SEARCH BY COURSE CODE OR SUBJECT NAME..."
+          />
+        </div>
+      </div>
+
       {/* Filter Bar Console */}
       <FilterBar
         selectedExams={selectedExams}
@@ -101,22 +117,6 @@ export default function CataloguePage({
         setOnlyAnswerKeys={setOnlyAnswerKeys}
         onResetFilters={handleResetFilters}
       />
-
-      {/* Search Input */}
-      <div className="bg-bauhaus-surface border-4 border-bauhaus-border p-4 shadow-bauhaus sharp flex gap-4">
-        <div className="relative flex-1">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Search className="text-bauhaus-muted" size={20} />
-          </div>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3.5 bg-white border-2 border-bauhaus-border text-base font-mono font-bold uppercase placeholder-gray-500 text-black sharp focus:outline-none focus:ring-4 focus:ring-bauhaus-yellow focus:border-black transition-all"
-            placeholder="SEARCH BY COURSE CODE OR SUBJECT NAME..."
-          />
-        </div>
-      </div>
 
       {/* Filtered Papers Grid (When filters are active) */}
       {hasActiveFilters && (

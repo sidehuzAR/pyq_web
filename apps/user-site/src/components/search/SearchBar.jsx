@@ -44,7 +44,7 @@ export default function SearchBar({
             if (searchQuery.trim()) setShowDropdown(true);
           }}
           placeholder={placeholder}
-          className="w-full pl-10 pr-10 py-2.5 bg-white text-black text-sm font-bold placeholder-gray-500 uppercase tracking-wider focus:outline-none sharp"
+          className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-black/50 text-black dark:text-white placeholder-gray-500 dark:placeholder-stone-400 text-sm font-bold uppercase tracking-wider focus:outline-none sharp"
         />
         {searchQuery && (
           <button
