@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
-import { X, Check, Trash2, Edit3, Save } from 'lucide-react';
+import { X, Check, Trash2, Edit3, Save, ChevronLeft, ChevronRight } from 'lucide-react';
 import Badge from '../shared/Badge.jsx';
 import Button from '../shared/Button.jsx';
 
-export default function InspectorModal({ paper, courses = [], onClose, onApprove, onReject, onEdit }) {
+const formatDate = (dateString) => {
+  if (!dateString) return 'Unknown Date';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return 'Unknown Date';
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+};
+
+export default function InspectorModal({ paper, papers = [], onSetPaper, courses = [], onClose, onApprove, onReject, onEdit }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     course_code: paper.course_code || '',
@@ -14,6 +21,26 @@ export default function InspectorModal({ paper, courses = [], onClose, onApprove
     semester: paper.semester || '',
     has_answer_key: paper.has_answer_key || false,
   });
+
+  React.useEffect(() => {
+    setIsEditing(false);
+    setEditForm({
+      course_code: paper?.course_code || '',
+      subject_name: paper?.subject_name || '',
+      exam_type: paper?.exam_type || '',
+      slot_tag: paper?.slot_tag || '',
+      academic_year: paper?.academic_year || '',
+      semester: paper?.semester || '',
+      has_answer_key: paper?.has_answer_key || false,
+    });
+  }, [paper?.id]);
+
+  const currentIndex = papers.findIndex(p => p.id === paper?.id);
+  const hasNext = currentIndex !== -1 && currentIndex < papers.length - 1;
+  const hasPrev = currentIndex > 0;
+
+  const handleNext = () => onSetPaper(papers[currentIndex + 1]);
+  const handlePrev = () => onSetPaper(papers[currentIndex - 1]);
 
   const handleSaveEdit = async () => {
     await onEdit(paper.id, editForm);
@@ -31,6 +58,8 @@ export default function InspectorModal({ paper, courses = [], onClose, onApprove
   };
 
   if (!paper) return null;
+
+  const isPdf = paper.file_url?.toLowerCase().endsWith('.pdf');
 
   return (
     <div className="fixed inset-0 z-50 bg-bauhaus-canvas/85 backdrop-blur-sm flex items-center justify-center p-4">
@@ -51,12 +80,36 @@ export default function InspectorModal({ paper, courses = [], onClose, onApprove
         {/* Side-by-side Grid */}
         <div className="flex-1 overflow-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Scan Image Container */}
-          <div className="bg-bauhaus-canvas border-2 border-bauhaus-border p-2 flex items-center justify-center min-h-[300px]">
-            <img
-              src={paper.file_url}
-              alt="Scan Preview"
-              className="max-w-full max-h-[70vh] object-contain block border border-bauhaus-border"
-            />
+          <div className="bg-bauhaus-canvas border-2 border-bauhaus-border p-2 flex items-center justify-center min-h-[300px] relative">
+            {hasPrev && (
+              <button 
+                onClick={handlePrev} 
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 bg-bauhaus-surface/80 border-2 border-bauhaus-border hover:bg-bauhaus-yellow hover:text-bauhaus-canvas sharp text-bauhaus-ink transition-colors cursor-pointer flex items-center justify-center shadow-bauhaus-sm"
+              >
+                <ChevronLeft size={24} />
+              </button>
+            )}
+            {isPdf ? (
+              <iframe
+                src={paper.file_url}
+                title="Scan Preview"
+                className="w-full h-[70vh] border border-bauhaus-border"
+              />
+            ) : (
+              <img
+                src={paper.file_url}
+                alt="Scan Preview"
+                className="max-w-full max-h-[70vh] object-contain block border border-bauhaus-border"
+              />
+            )}
+            {hasNext && (
+              <button 
+                onClick={handleNext} 
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-2 bg-bauhaus-surface/80 border-2 border-bauhaus-border hover:bg-bauhaus-yellow hover:text-bauhaus-canvas sharp text-bauhaus-ink transition-colors cursor-pointer flex items-center justify-center shadow-bauhaus-sm"
+              >
+                <ChevronRight size={24} />
+              </button>
+            )}
           </div>
 
           {/* Submitted Metadata */}
@@ -110,6 +163,10 @@ export default function InspectorModal({ paper, courses = [], onClose, onApprove
                     <div className="flex justify-between py-1 border-b border-bauhaus-border">
                       <span className="font-mono text-bauhaus-muted">UPLOADER IP:</span>
                       <span className="font-mono text-[11px] text-bauhaus-muted">{paper.uploaded_by || 'Student'}</span>
+                    </div>
+                    <div className="flex justify-between py-1 border-b border-bauhaus-border">
+                      <span className="font-mono text-bauhaus-muted">UPLOADED ON:</span>
+                      <span className="font-mono text-[11px] font-bold text-bauhaus-ink">{formatDate(paper.created_at)}</span>
                     </div>
                   </div>
                 </>

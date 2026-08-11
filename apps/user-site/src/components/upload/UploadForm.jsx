@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { jsPDF } from 'jspdf';
 
 import Dropzone from './Dropzone.jsx';
 import Button from '../shared/Button.jsx';
@@ -14,7 +15,7 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
   const [academicYear, setAcademicYear] = useState('2025-26');
   const [semester, setSemester] = useState('Fall Sem');
   const [hasAnswerKey, setHasAnswerKey] = useState(false);
-  const [file, setFile] = useState(null);
+  const [files, setFiles] = useState([]);
   const [isCustomCourse, setIsCustomCourse] = useState(false);
 
   const [showCodeDropdown, setShowCodeDropdown] = useState(false);
@@ -74,7 +75,7 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
     setShowNameDropdown(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // 1. Rate Limit Enforcement (02-functional-spec.md §6)
@@ -89,17 +90,82 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
       return;
     }
 
-    let fileUrl = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1000&q=80';
-    if (file) {
-      try {
-        fileUrl = URL.createObjectURL(file);
-      } catch {
-        // Fallback preview
-      }
+    if (files.length === 0) {
+      onToast('Please select at least one file.', 'error');
+      return;
     }
 
     let finalCourseCode = courseCode.trim().toUpperCase();
     let finalSubjectName = subjectName.trim();
+
+    let finalFile = null;
+    
+    if (files[0].type === 'application/pdf') {
+      finalFile = files[0];
+    } else {
+      // Convert multiple images to a single PDF
+      onToast('Processing images into PDF...', 'info');
+      try {
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        const a4Width = 210;
+        const a4Height = 297;
+
+        for (let i = 0; i < files.length; i++) {
+          const imgFile = files[i];
+          const imgUrl = URL.createObjectURL(imgFile);
+          
+          // Wait for the image to load to get dimensions
+          const img = new Image();
+          img.src = imgUrl;
+          await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+          });
+
+          if (i > 0) pdf.addPage();
+
+          // Calculate scaling to fit A4 while maintaining aspect ratio
+          const imgRatio = img.width / img.height;
+          const a4Ratio = a4Width / a4Height;
+
+          let finalWidth, finalHeight;
+
+          if (imgRatio > a4Ratio) {
+            // Image is wider than A4 proportion
+            finalWidth = a4Width;
+            finalHeight = a4Width / imgRatio;
+          } else {
+            // Image is taller than A4 proportion
+            finalHeight = a4Height;
+            finalWidth = a4Height * imgRatio;
+          }
+
+          // Center image on the page
+          const x = (a4Width - finalWidth) / 2;
+          const y = (a4Height - finalHeight) / 2;
+
+          // Determine image type for jsPDF
+          const imgType = imgFile.type === 'image/png' ? 'PNG' : imgFile.type === 'image/webp' ? 'WEBP' : 'JPEG';
+          
+          pdf.addImage(img, imgType, x, y, finalWidth, finalHeight);
+          URL.revokeObjectURL(imgUrl);
+        }
+
+        const pdfBlob = pdf.output('blob');
+        finalFile = new File([pdfBlob], `${finalCourseCode}_${examType}.pdf`, {
+          type: 'application/pdf',
+        });
+      } catch (error) {
+        console.error("PDF Generation error", error);
+        onToast('Failed to process images. Please try again or upload a PDF.', 'error');
+        return;
+      }
+    }
 
     // Check if the typed course exists in the registry
     const courseExists = courses.some(c => c.course_code.toUpperCase() === finalCourseCode);
@@ -116,13 +182,13 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
     };
 
     incrementRateLimitCount();
-    onSubmitUpload({ file, metadata: payload });
+    onSubmitUpload({ file: finalFile, metadata: payload });
 
     // Reset form
     setCourseCode('');
     setSubjectName('');
     setHasAnswerKey(false);
-    setFile(null);
+    setFiles([]);
   };
 
   return (
@@ -284,7 +350,7 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
         <label className="block text-xs font-mono font-bold uppercase text-bauhaus-ink mb-1">
           PAPER SCAN FILE *
         </label>
-        <Dropzone file={file} setFile={setFile} onError={err => onToast(err, 'error')} />
+        <Dropzone files={files} setFiles={setFiles} onError={err => onToast(err, 'error')} />
       </div>
 
       {/* Submit Button */}

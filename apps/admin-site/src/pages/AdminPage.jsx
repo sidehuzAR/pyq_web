@@ -5,12 +5,13 @@ import RegistryViewer from '../components/admin/RegistryViewer.jsx';
 import PaperEditor from '../components/admin/PaperEditor.jsx';
 import SectionHeading from '../components/shared/SectionHeading.jsx';
 import Button from '../components/shared/Button.jsx';
-import { ShieldCheck, CheckCircle2, PlusCircle, Edit3, Archive } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, PlusCircle, Edit3, Archive, AlertCircle, XCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase.js';
 
 const TABS = [
-  { id: 'queue', label: 'PENDING QUEUE', icon: CheckCircle2 },
-  { id: 'papers', label: 'ALL PAPERS', icon: Edit3 },
+  { id: 'active', label: 'ACTIVE PAPERS', icon: CheckCircle2 },
+  { id: 'pending', label: 'PENDING', icon: AlertCircle },
+  { id: 'rejected', label: 'REJECTED', icon: XCircle },
   { id: 'add', label: 'ADD PAPER', icon: PlusCircle },
   { id: 'registry', label: 'COURSE REGISTRY', icon: Archive },
 ];
@@ -28,7 +29,7 @@ export default function AdminPage({
   onDeleteCourse,
   onToast,
 }) {
-  const [activeTab, setActiveTab] = useState('queue');
+  const [activeTab, setActiveTab] = useState('active');
 
   // Paper actions
   const handleApprove = async (paperId) => {
@@ -114,7 +115,7 @@ export default function AdminPage({
           >
             <Icon size={14} />
             <span>{label}</span>
-            {id === 'queue' && pendingPapers.length > 0 && (
+            {id === 'pending' && pendingPapers.length > 0 && (
               <span className="bg-bauhaus-yellow text-bauhaus-canvas px-2 py-0.5 text-[10px] font-black sharp">
                 {pendingPapers.length}
               </span>
@@ -123,33 +124,53 @@ export default function AdminPage({
         ))}
       </div>
 
-      {/* Tab: Pending Queue */}
-      {activeTab === 'queue' && (
+      {/* Tab: Active Papers */}
+      {activeTab === 'active' && (
         <div className="space-y-4">
-          <SectionHeading number="01" title="PENDING MODERATION QUEUE" subtitle="Review student submissions. Approved papers go live instantly on the public site." accentColor="red" />
-          <ModerationQueue
-            pendingPapers={pendingPapers}
-            courses={courses}
-            onApprove={handleApprove}
-            onReject={handleReject}
-            onEdit={handleEdit}
-            onToast={onToast}
-          />
-        </div>
-      )}
-
-      {/* Tab: All Papers (Edit/Delete) */}
-      {activeTab === 'papers' && (
-        <div className="space-y-4">
-          <SectionHeading number="02" title="ALL PAPERS — EDIT & MANAGE" subtitle="Edit metadata or delete any paper. Changes reflect instantly on the public site." accentColor="blue" />
+          <SectionHeading number="01" title="ACTIVE PAPERS" subtitle="Manage currently live papers. Edit metadata or delete." accentColor="blue" />
           <PaperEditor
-            papers={allPapers}
+            papers={approvedPapers}
             courses={courses}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onApprove={handleApprove}
             onReject={handleReject}
             onToast={onToast}
+            context="active"
+          />
+        </div>
+      )}
+
+      {/* Tab: Pending Papers */}
+      {activeTab === 'pending' && (
+        <div className="space-y-4">
+          <SectionHeading number="02" title="PENDING MODERATION" subtitle="Review student submissions. Approved papers go live instantly." accentColor="yellow" />
+          <PaperEditor
+            papers={pendingPapers}
+            courses={courses}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onApprove={handleApprove}
+            onReject={handleReject}
+            onToast={onToast}
+            context="pending"
+          />
+        </div>
+      )}
+
+      {/* Tab: Rejected Papers */}
+      {activeTab === 'rejected' && (
+        <div className="space-y-4">
+          <SectionHeading number="03" title="REJECTED PAPERS" subtitle="Papers that failed moderation. They are not visible to users." accentColor="red" />
+          <PaperEditor
+            papers={rejectedPapers}
+            courses={courses}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onApprove={handleApprove}
+            onReject={handleReject}
+            onToast={onToast}
+            context="rejected"
           />
         </div>
       )}
@@ -157,7 +178,7 @@ export default function AdminPage({
       {/* Tab: Admin Add Paper */}
       {activeTab === 'add' && (
         <div className="space-y-4">
-          <SectionHeading number="03" title="ADD PAPER DIRECTLY" subtitle="Upload a paper directly as approved — bypasses the pending queue and goes live immediately." accentColor="yellow" />
+          <SectionHeading number="04" title="ADD PAPER DIRECTLY" subtitle="Upload a paper directly as approved — bypasses the pending queue and goes live immediately." accentColor="yellow" />
           <AdminAddPaperForm courses={courses} onSubmit={handleAdminAdd} onToast={onToast} />
         </div>
       )}
@@ -165,7 +186,7 @@ export default function AdminPage({
       {/* Tab: Course Registry */}
       {activeTab === 'registry' && (
         <div className="space-y-4">
-          <SectionHeading number="04" title="COURSE REGISTRY MANAGEMENT" subtitle="Add, edit, or remove courses. Changes propagate instantly to upload forms and search." accentColor="blue" />
+          <SectionHeading number="05" title="COURSE REGISTRY MANAGEMENT" subtitle="Add, edit, or remove courses. Changes propagate instantly to upload forms and search." accentColor="blue" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             <CourseRegistryForm onAddCourse={onAddCourse} onToast={onToast} />
             <RegistryViewer courses={courses} onUpdate={onUpdateCourse} onDelete={onDeleteCourse} onToast={onToast} />
