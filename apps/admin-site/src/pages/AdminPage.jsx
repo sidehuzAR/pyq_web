@@ -47,10 +47,26 @@ export default function AdminPage({
     else { onToast('Paper approved — now live!', 'success'); onRefresh(); }
   };
 
+  const deleteStorageFile = async (fileUrl) => {
+    if (!fileUrl || !fileUrl.includes('paper-scans/')) return;
+    try {
+      const path = fileUrl.split('paper-scans/').pop().split('?')[0];
+      if (path) {
+        await supabase.storage.from('paper-scans').remove([decodeURIComponent(path)]);
+      }
+    } catch (err) {
+      console.warn('Storage file purge failed:', err);
+    }
+  };
+
   const handleReject = async (paperId) => {
+    const target = pendingPapers.find(p => p.id === paperId) || allPapers.find(p => p.id === paperId);
+    if (target?.file_url) {
+      await deleteStorageFile(target.file_url);
+    }
     const { error } = await supabase.from('papers').update({ status: 'rejected' }).eq('id', paperId);
     if (error) { onToast('Reject failed: ' + error.message, 'error'); }
-    else { onToast('Paper rejected.', 'warning'); onRefresh(); }
+    else { onToast('Paper rejected & storage purged.', 'warning'); onRefresh(); }
   };
 
   const handleEdit = async (paperId, updates) => {
@@ -62,9 +78,13 @@ export default function AdminPage({
 
   const handleDelete = async (paperId) => {
     if (!window.confirm('Delete this paper permanently?')) return;
+    const target = allPapers.find(p => p.id === paperId) || pendingPapers.find(p => p.id === paperId);
+    if (target?.file_url) {
+      await deleteStorageFile(target.file_url);
+    }
     const { error } = await supabase.from('papers').delete().eq('id', paperId);
     if (error) { onToast('Delete failed: ' + error.message, 'error'); }
-    else { onToast('Paper deleted.', 'success'); onRefresh(); }
+    else { onToast('Paper permanently deleted & storage purged.', 'success'); onRefresh(); }
   };
 
   const handleAdminAdd = async ({ file, metadata }) => {

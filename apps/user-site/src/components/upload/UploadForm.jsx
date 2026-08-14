@@ -121,30 +121,52 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
 
         for (let i = 0; i < files.length; i++) {
           const imgFile = files[i];
-          const imgUrl = URL.createObjectURL(imgFile);
           
-          // Wait for the image to load to get dimensions
-          const img = new Image();
-          img.src = imgUrl;
-          await new Promise((resolve, reject) => {
-            img.onload = resolve;
-            img.onerror = reject;
+          // Compress high-res camera photos on client-side before embedding in PDF
+          const { dataUrl, width, height } = await new Promise((resolve, reject) => {
+            const img = new Image();
+            const url = URL.createObjectURL(imgFile);
+            img.onload = () => {
+              let w = img.width;
+              let h = img.height;
+              const maxDim = 1600;
+              if (w > maxDim || h > maxDim) {
+                if (w > h) {
+                  h = Math.round((h * maxDim) / w);
+                  w = maxDim;
+                } else {
+                  w = Math.round((w * maxDim) / h);
+                  h = maxDim;
+                }
+              }
+              const canvas = document.createElement('canvas');
+              canvas.width = w;
+              canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, w, h);
+              const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+              URL.revokeObjectURL(url);
+              resolve({ dataUrl: compressedDataUrl, width: w, height: h });
+            };
+            img.onerror = (err) => {
+              URL.revokeObjectURL(url);
+              reject(err);
+            };
+            img.src = url;
           });
 
           if (i > 0) pdf.addPage();
 
           // Calculate scaling to fit A4 while maintaining aspect ratio
-          const imgRatio = img.width / img.height;
+          const imgRatio = width / height;
           const a4Ratio = a4Width / a4Height;
 
           let finalWidth, finalHeight;
 
           if (imgRatio > a4Ratio) {
-            // Image is wider than A4 proportion
             finalWidth = a4Width;
             finalHeight = a4Width / imgRatio;
           } else {
-            // Image is taller than A4 proportion
             finalHeight = a4Height;
             finalWidth = a4Height * imgRatio;
           }
@@ -153,11 +175,7 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
           const x = (a4Width - finalWidth) / 2;
           const y = (a4Height - finalHeight) / 2;
 
-          // Determine image type for jsPDF
-          const imgType = imgFile.type === 'image/png' ? 'PNG' : imgFile.type === 'image/webp' ? 'WEBP' : 'JPEG';
-          
-          pdf.addImage(img, imgType, x, y, finalWidth, finalHeight);
-          URL.revokeObjectURL(imgUrl);
+          pdf.addImage(dataUrl, 'JPEG', x, y, finalWidth, finalHeight);
         }
 
         const pdfBlob = pdf.output('blob');
