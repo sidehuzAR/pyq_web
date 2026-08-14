@@ -6,6 +6,7 @@ export default function AutocompleteDropdown({
   matchingCourses = [],
   searchQuery = '',
   onSelectCourse,
+  onRequestCourse,
   onClose
 }) {
   const navigate = useNavigate();
@@ -19,8 +20,22 @@ export default function AutocompleteDropdown({
       </div>
 
       {matchingCourses.length === 0 ? (
-        <div className="p-4 text-center text-xs font-bold uppercase tracking-wider text-bauhaus-muted">
-          NO COURSES MATCHING "{searchQuery}"
+        <div className="p-4 text-center space-y-2">
+          <div className="text-xs font-bold uppercase tracking-wider text-bauhaus-muted">
+            NO COURSES MATCHING "{searchQuery}"
+          </div>
+          {onRequestCourse && (
+            <button
+              type="button"
+              onClick={() => {
+                onRequestCourse(searchQuery);
+                if (onClose) onClose();
+              }}
+              className="text-xs font-mono font-bold uppercase text-bauhaus-yellow hover:underline cursor-pointer bg-bauhaus-canvas px-3 py-1.5 border border-bauhaus-border sharp inline-flex items-center gap-1"
+            >
+              + REQUEST COURSE ADDITION TO REGISTRY
+            </button>
+          )}
         </div>
       ) : (
         <div className="divide-y divide-bauhaus-border transition-colors duration-200">

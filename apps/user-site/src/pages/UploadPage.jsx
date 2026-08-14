@@ -22,7 +22,13 @@ export default function UploadPage({ courses = [], onToast }) {
       let errMsg = error.message || 'An unexpected error occurred.';
       
       // Clean up raw database errors for the frontend
-      if (errMsg.includes('foreign key constraint') || errMsg.includes('violates foreign key')) {
+      if (errMsg.includes('Failed to register new course')) {
+        if (errMsg.includes('row-level security') || errMsg.includes('RLS') || errMsg.includes('security policy')) {
+          errMsg = 'Cannot register new subject due to security policies. Please ensure the Supabase "courses" table allows public inserts, or select an existing subject from the list.';
+        } else {
+          errMsg = 'Failed to register the new course in registry. Please check your inputs or try selecting an existing course.';
+        }
+      } else if (errMsg.includes('foreign key constraint') || errMsg.includes('violates foreign key')) {
         if (errMsg.includes('course_code')) {
            errMsg = 'Invalid course code. Please select a valid course from the list or check "SUBJECT NOT FOUND? ENTER MANUALLY" if your subject is missing.';
         } else {
@@ -38,7 +44,11 @@ export default function UploadPage({ courses = [], onToast }) {
       
       onToast('Upload failed: ' + errMsg, 'error');
     } else {
-      onToast('Paper scan submitted for admin moderation!', 'success');
+      if (payload.is_new_course) {
+        onToast('Paper scan & course registration request submitted for admin moderation!', 'success');
+      } else {
+        onToast('Paper scan submitted for admin moderation!', 'success');
+      }
     }
   };
 

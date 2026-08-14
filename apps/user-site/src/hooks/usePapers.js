@@ -49,7 +49,12 @@ export function useUploadPaper() {
           { onConflict: 'course_code' }
         );
       if (courseError) {
-        return { error: { message: `Failed to register new course: ${courseError.message}` } };
+        console.error('Course registration error:', courseError);
+        return { 
+          error: { 
+            message: `Failed to register new course "${paperMetadata.course_code}": ${courseError.message}` 
+          } 
+        };
       }
     }
 

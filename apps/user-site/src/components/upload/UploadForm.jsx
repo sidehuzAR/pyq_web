@@ -4,10 +4,13 @@ import { jsPDF } from 'jspdf';
 import Dropzone from './Dropzone.jsx';
 import Button from '../shared/Button.jsx';
 import AutocompleteDropdown from '../search/AutocompleteDropdown.jsx';
+import RequestCourseModal from './RequestCourseModal.jsx';
 import { EXAM_TYPES, ACADEMIC_YEARS, SEMESTERS } from '../../constants/enums.js';
 import { checkRateLimit, incrementRateLimitCount } from '../../lib/rateLimit.js';
+import { useCourseRequests } from '../../hooks/useCourseRequests.js';
 
 export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
+  const { requestCourse } = useCourseRequests();
   const [courseCode, setCourseCode] = useState('');
   const [subjectName, setSubjectName] = useState('');
   const [examType, setExamType] = useState('CAT-1');
@@ -17,6 +20,7 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
   const [hasAnswerKey, setHasAnswerKey] = useState(false);
   const [files, setFiles] = useState([]);
   const [isCustomCourse, setIsCustomCourse] = useState(false);
+  const [showRequestModal, setShowRequestModal] = useState(false);
 
   const [showCodeDropdown, setShowCodeDropdown] = useState(false);
   const [showNameDropdown, setShowNameDropdown] = useState(false);
@@ -169,6 +173,7 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
 
     // Check if the typed course exists in the registry
     const courseExists = courses.some(c => c.course_code.toUpperCase() === finalCourseCode);
+    const isNewCourse = isCustomCourse || !courseExists;
 
     const payload = {
       course_code: finalCourseCode,
@@ -178,8 +183,17 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
       academic_year: academicYear,
       semester: semester,
       has_answer_key: hasAnswerKey,
-      is_new_course: !courseExists
+      is_new_course: isNewCourse
     };
+
+    // If student ticked custom subject or entered a new course, send course registration request
+    if (isNewCourse) {
+      requestCourse({
+        course_code: finalCourseCode,
+        subject_name: finalSubjectName,
+        requested_by: 'Student Paper Upload'
+      });
+    }
 
     incrementRateLimitCount();
     onSubmitUpload({ file: finalFile, metadata: payload });
@@ -189,6 +203,7 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
     setSubjectName('');
     setHasAnswerKey(false);
     setFiles([]);
+    setIsCustomCourse(false);
   };
 
   return (
@@ -250,7 +265,7 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
           )}
         </div>
 
-        <div className="sm:col-span-3">
+        <div className="sm:col-span-3 flex flex-wrap items-center justify-between gap-2 border-t border-bauhaus-border pt-2">
           <label className="inline-flex items-center gap-2 cursor-pointer select-none text-[10px] font-bold uppercase tracking-wider text-bauhaus-muted hover:text-bauhaus-ink transition-colors">
             <input
               type="checkbox"
@@ -264,6 +279,14 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
             />
             <span>SUBJECT NOT FOUND? ENTER MANUALLY</span>
           </label>
+
+          <button
+            type="button"
+            onClick={() => setShowRequestModal(true)}
+            className="text-[10px] font-mono font-bold uppercase text-bauhaus-yellow hover:underline cursor-pointer flex items-center gap-1"
+          >
+            + REQUEST NEW COURSE ADDITION
+          </button>
         </div>
       </div>
 
@@ -359,6 +382,15 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
           SUBMIT PAPER FOR VERIFICATION →
         </Button>
       </div>
+
+      {showRequestModal && (
+        <RequestCourseModal
+          initialCode={courseCode}
+          initialName={subjectName}
+          onClose={() => setShowRequestModal(false)}
+          onToast={onToast}
+        />
+      )}
     </form>
   );
 }
