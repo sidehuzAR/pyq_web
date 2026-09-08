@@ -1,0 +1,17 @@
+name: Keep Supabase Awake
+
+on:
+  schedule:
+    # Runs every 3 days at 00:00 (Supabase pauses after 7 days of inactivity)
+    - cron: '0 0 */3 * *'
+  workflow_dispatch: # Allows manual trigger from the Actions tab
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase to keep it awake
+        run: |
+          curl -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
