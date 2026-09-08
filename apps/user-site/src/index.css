@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  .cursor-pointer {
+    touch-action: manipulation;
+  }
+
+  :root {
+    /* Light Theme (Cream Base + Heavy Frosted Translucent Glass Surface) */
+    --bg-canvas: #F4F0E6;
+    --bg-surface: rgba(255, 255, 255, 0.88);
+    --bg-elevated: rgba(249, 247, 241, 0.94);
+    --text-ink: #111111;
+    --text-muted: #666666;
+    --border-base: #111111;
+    --accent-red: #D92D20;
+    --accent-blue: #155A8A;
+    --accent-yellow: #F2C230;
+  }
+
+  .dark {
+    /* Dark Theme (Dark Stone Base + Heavy Frosted Translucent Glass Surface) */
+    --bg-canvas: #12100E; /* Deep stone dark */
+    --bg-surface: rgba(24, 21, 18, 0.88); /* Translucent frosted glass surface */
+    --bg-elevated: rgba(36, 32, 28, 0.94); /* Translucent elevated glass surface */
+    --text-ink: #F5F5F4; /* stone-100 */
+    --text-muted: #A8A29E; /* stone-400 */
+    --border-base: #57534E; /* stone-600 */
+    --accent-red: #D92D20;
+    --accent-blue: #00D4FF; /* Vibrant cyan for dark mode pop */
+    --accent-yellow: #E8A838;
+  }
+}
+
+@theme {
+  --color-bauhaus-canvas: var(--bg-canvas);
+  --color-bauhaus-surface: var(--bg-surface);
+  --color-bauhaus-elevated: var(--bg-elevated);
+  --color-bauhaus-ink: var(--text-ink);
+  --color-bauhaus-muted: var(--text-muted);
+  --color-bauhaus-border: var(--border-base);
+  --color-bauhaus-red: var(--accent-red);
+  --color-bauhaus-blue: var(--accent-blue);
+  --color-bauhaus-yellow: var(--accent-yellow);
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Montserrat', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius-default: 0px;
+  --radius-none: 0px;
+
+  --shadow-bauhaus: 4px 4px 0px var(--border-base);
+  --shadow-bauhaus-lg: 6px 6px 0px var(--border-base);
+  --shadow-bauhaus-red: 4px 4px 0px var(--accent-red);
+  --shadow-bauhaus-yellow: 4px 4px 0px var(--accent-yellow);
+  --shadow-bauhaus-blue: 4px 4px 0px var(--accent-blue);
+}
+
+@layer utilities {
+  .sharp {
+    border-radius: 0 !important;
+  }
+
+  .bg-bauhaus-surface,
+  .bg-bauhaus-elevated {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(6deg);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(20px) rotate(-6deg);
+  }
+}
+
+@keyframes float-drift {
+  0%, 100% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+  33% {
+    transform: translate(15px, -15px) rotate(4deg);
+  }
+  66% {
+    transform: translate(-10px, 10px) rotate(-3deg);
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.08);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 10s ease-in-out infinite;
+}
+
+.animate-float-drift {
+  animation: float-drift 12s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 6s ease-in-out infinite;
+}
+
+.bg-grid-dots {
+  background-image: radial-gradient(var(--border-base) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
