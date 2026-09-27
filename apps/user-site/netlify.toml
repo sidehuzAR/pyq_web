@@ -1,0 +1,13 @@
+[[headers]]
+  for = "/cdn/scans/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

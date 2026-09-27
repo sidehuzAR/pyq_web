@@ -79,8 +79,17 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
     setShowNameDropdown(false);
   };
 
+  const [botHoneypot, setBotHoneypot] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Anti-bot honeypot check: automated scrapers fill all fields
+    if (botHoneypot) {
+      console.warn('Bot upload detected and blocked.');
+      onToast('Paper scan submitted for admin moderation!', 'success');
+      return;
+    }
 
     // 1. Rate Limit Enforcement (02-functional-spec.md §6)
     const rateCheck = checkRateLimit();
@@ -226,6 +235,18 @@ export default function UploadForm({ courses = [], onSubmitUpload, onToast }) {
 
   return (
     <form onSubmit={handleSubmit} className="bg-bauhaus-surface border-4 border-bauhaus-border p-6 shadow-bauhaus-lg space-y-4 sharp max-w-2xl mx-auto">
+      {/* Anti-Bot Honeypot field (hidden from real users, filled by bots) */}
+      <input
+        type="text"
+        name="company_title"
+        className="hidden"
+        style={{ display: 'none' }}
+        tabIndex={-1}
+        autoComplete="off"
+        value={botHoneypot}
+        onChange={(e) => setBotHoneypot(e.target.value)}
+      />
+
       <div className="bg-bauhaus-elevated text-bauhaus-ink border border-bauhaus-border p-3 sharp flex items-center justify-between mb-2">
         <span className="font-display font-black text-base uppercase tracking-wider">
           CONTRIBUTE EXAM PAPER

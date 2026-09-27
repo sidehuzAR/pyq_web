@@ -1,36 +1,67 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabase.js';
+import { getCdnUrl } from '../lib/cdn.js';
 
-// Fetch only approved papers — user side, RLS enforces this anyway
+const CACHE_KEY = 'pyq_approved_papers_cache';
+const CACHE_TTL = 20 * 60 * 1000; // 20 minutes
+
+// Fetch only approved papers — cached in localStorage for 3k daily viewers
 export function useApprovedPapers() {
-  const [approvedPapers, setApprovedPapers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [approvedPapers, setApprovedPapers] = useState(() => {
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_TTL && Array.isArray(data) && data.length > 0) {
+          return data;
+        }
+      }
+    } catch {}
+    return [];
+  });
+  const [loading, setLoading] = useState(approvedPapers.length === 0);
 
-  const fetchApproved = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('papers')
-      .select('*')
-      .eq('status', 'approved')
-      .order('uploaded_at', { ascending: false });
-    if (!error) setApprovedPapers(data || []);
-    setLoading(false);
+  const fetchApproved = useCallback(async (force = false) => {
+    if (!force) {
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          if (Date.now() - timestamp < CACHE_TTL && Array.isArray(data) && data.length > 0) {
+            setApprovedPapers(data);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {}
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('papers')
+        .select('*')
+        .eq('status', 'approved')
+        .order('uploaded_at', { ascending: false });
+
+      if (!error && data) {
+        // Rewrite Supabase storage URLs to fast Netlify CDN edge proxy
+        const proxiedData = data.map(paper => ({
+          ...paper,
+          file_url: getCdnUrl(paper.file_url)
+        }));
+        setApprovedPapers(proxiedData);
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ data: proxiedData, timestamp: Date.now() }));
+      }
+    } catch (err) {
+      console.warn('[useApprovedPapers] Failed to fetch, using cached/fallback data.', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
     fetchApproved();
-
-    // Real-time listener — update instantly when admin approves/rejects
-    const channel = supabase
-      .channel('papers-approved')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'papers' }, () => {
-        fetchApproved();
-      })
-      .subscribe();
-
-    return () => supabase.removeChannel(channel);
   }, [fetchApproved]);
 
-  return { approvedPapers, loading, refreshApproved: fetchApproved };
+  return { approvedPapers, loading, refreshApproved: () => fetchApproved(true) };
 }
 
 // Upload a new paper (goes to pending)

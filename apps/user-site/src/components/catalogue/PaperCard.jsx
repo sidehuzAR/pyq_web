@@ -59,22 +59,32 @@ export default function PaperCard({
           {paper.subject_name}
         </h3>
 
-        {/* Image Preview Thumbnail */}
+        {/* Visual Document Preview Card (Zero-bandwidth, instant render) */}
         <div
           onClick={() => onViewPaper && onViewPaper(paper)}
-          className="relative h-36 bg-bauhaus-canvas mb-3 border border-bauhaus-border overflow-hidden cursor-pointer group transition-colors duration-200"
+          className="relative h-32 bg-bauhaus-elevated mb-3 border-2 border-bauhaus-border overflow-hidden cursor-pointer group flex flex-col justify-between p-3 select-none transition-colors duration-200"
         >
-        {paper.file_url?.toLowerCase().includes('.pdf') ? (
-          <PdfThumbnail fileUrl={paper.file_url} />
-        ) : (
-          <img
-            src={paper.file_url}
-            alt={paper.subject_name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-80 group-hover:opacity-100"
-          />
-        )}
-          <div className="absolute inset-0 bg-bauhaus-canvas/70 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-150">
-            <span className="bg-bauhaus-red text-white text-xs font-black px-3 py-1.5 uppercase tracking-wider sharp border border-white">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[10px] font-black tracking-widest text-bauhaus-muted uppercase flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-bauhaus-blue animate-pulse"></span>
+              {paper.file_url?.toLowerCase().includes('.pdf') ? 'PDF DOCUMENT' : 'EXAM SCAN'}
+            </span>
+            <span className="font-mono text-[9px] font-bold text-bauhaus-ink/60 border border-bauhaus-border px-1.5 py-0.5">
+              VERIFIED
+            </span>
+          </div>
+
+          <div className="space-y-0.5 my-auto">
+            <div className="font-mono text-xs font-black text-bauhaus-red tracking-tight truncate">
+              {paper.course_code} • {paper.exam_type}
+            </div>
+            <div className="text-[11px] font-medium text-bauhaus-muted font-mono truncate">
+              SLOT: {paper.slot_tag} | {paper.academic_year}
+            </div>
+          </div>
+
+          <div className="absolute inset-0 bg-bauhaus-canvas/85 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-150 backdrop-blur-[2px]">
+            <span className="bg-bauhaus-red text-white text-xs font-black px-4 py-2 uppercase tracking-wider sharp border border-white shadow-bauhaus-red">
               INSPECT SCAN →
             </span>
           </div>

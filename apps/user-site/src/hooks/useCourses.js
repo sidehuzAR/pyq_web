@@ -1,17 +1,53 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase.js';
 
-export function useCourses() {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
+const COURSES_CACHE_KEY = 'pyq_courses_cache';
+const COURSES_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
-  const fetchCourses = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('courses')
-      .select('*')
-      .order('course_code', { ascending: true });
-    if (!error) setCourses(data || []);
-    setLoading(false);
+export function useCourses() {
+  const [courses, setCourses] = useState(() => {
+    try {
+      const cached = localStorage.getItem(COURSES_CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < COURSES_CACHE_TTL && Array.isArray(data) && data.length > 0) {
+          return data;
+        }
+      }
+    } catch {}
+    return [];
+  });
+  const [loading, setLoading] = useState(courses.length === 0);
+
+  const fetchCourses = useCallback(async (force = false) => {
+    if (!force) {
+      try {
+        const cached = localStorage.getItem(COURSES_CACHE_KEY);
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          if (Date.now() - timestamp < COURSES_CACHE_TTL && Array.isArray(data) && data.length > 0) {
+            setCourses(data);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch {}
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*')
+        .order('course_code', { ascending: true });
+      if (!error && data) {
+        setCourses(data);
+        localStorage.setItem(COURSES_CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+      }
+    } catch (err) {
+      console.warn('[useCourses] Fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {

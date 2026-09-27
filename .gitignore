@@ -23,3 +23,6 @@ dist-ssr/
 # System files
 .DS_Store
 Thumbs.db
+
+# Hide admin site
+apps/admin-site/

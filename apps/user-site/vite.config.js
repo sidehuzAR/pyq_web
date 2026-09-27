@@ -6,6 +6,13 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     port: 3000,
-    open: true
+    open: true,
+    proxy: {
+      '/cdn/scans': {
+        target: 'https://bhipncujcdffcpdukglr.supabase.co/storage/v1/object/public/paper-scans',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/cdn\/scans/, '')
+      }
+    }
   }
 });
