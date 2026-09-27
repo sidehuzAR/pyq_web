@@ -1,1 +1,0 @@
-export default function CourseRegistryForm() { return <div>Course Registry Placeholder</div>; }

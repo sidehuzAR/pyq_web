@@ -1,1 +1,0 @@
-export default function RegistryViewer() { return <div>Registry Viewer Placeholder</div>; }
