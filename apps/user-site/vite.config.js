@@ -9,7 +9,7 @@ export default defineConfig({
     open: true,
     proxy: {
       '/cdn/scans': {
-        target: 'https://bhipncujcdffcpdukglr.supabase.co/storage/v1/object/public/paper-scans',
+        target: 'https://sxgdwnxvrdtjbucwlpgu.supabase.co/storage/v1/object/public/paper-scans',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/cdn\/scans/, '')
       }
