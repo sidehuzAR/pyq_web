@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase.js';
 
+import { LIVE_COURSES } from '../data/liveData.js';
+
 const COURSES_CACHE_KEY = 'pyq_courses_cache';
 const COURSES_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
@@ -15,9 +17,9 @@ export function useCourses() {
         }
       }
     } catch {}
-    return [];
+    return LIVE_COURSES;
   });
-  const [loading, setLoading] = useState(courses.length === 0);
+  const [loading, setLoading] = useState(false);
 
   const fetchCourses = useCallback(async (force = false) => {
     if (!force) {
