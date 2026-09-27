@@ -26,3 +26,6 @@ Thumbs.db
 
 # Hide admin site
 apps/admin-site/
+
+# Ignore nested clone
+pyq_web/
